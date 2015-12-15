@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/customRow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:measureWithLargestChild="false"
+    android:descendantFocusability="blocksDescendants">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/rowIcon"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:layout_marginRight="5dp"
+            android:layout_column="0"
+            android:layout_weight="25"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:src="@drawable/mdplaceholder" />
+
+        <LinearLayout
+            android:id="@+id/rowMain"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_column="1"
+            android:layout_marginRight="5dp"
+            android:measureWithLargestChild="false"
+            android:layout_weight="60">
+
+            <TextView
+                android:id="@+id/rowName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="rowName"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="25sp"
+                android:textColor="#000000"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:id="@+id/rowDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="rowDescription"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#606060"
+                android:fontFamily="sans-serif-light" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="rowAddress"
+                android:id="@+id/rowAddress"
+                android:textColor="#606060"
+                android:focusableInTouchMode="false"
+                android:fontFamily="sans-serif-light" />
+
+            <TextView
+                android:id="@+id/rowNotes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="rowNotes"
+                android:textColor="#878787"
+                android:layout_marginBottom="5dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ratingInfo"
+            android:layout_height="82dp"
+            android:layout_width="0dp"
+            android:orientation="vertical"
+            android:layout_column="3"
+            android:gravity="right"
+            android:minWidth="140dp"
+            android:layout_weight="15">
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.9mi"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#006699"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp" />
+
+            <ToggleButton android:id="@+id/favoriteToggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:textOn=""
+                android:textOff=""
+                android:background="@drawable/heart"
+                android:checked="false"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</TableLayout>

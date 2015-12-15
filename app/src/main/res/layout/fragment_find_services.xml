@@ -1,0 +1,162 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#000">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/titleBar"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageButton
+                android:id="@+id/logo"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="0.15"
+                android:background="#000"
+                android:scaleType="fitCenter"
+                android:src="@drawable/placeholder"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/appTitle"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:layout_weight="0.55"
+                android:background="#000"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center_vertical"
+                android:text="Find A Service"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            android:layout_marginTop="13dp">
+
+            <ImageButton
+                android:id="@+id/physicians"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#6ce3ff"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:onClick="launchMapsActivity" />
+
+            <ImageButton
+                android:id="@+id/counsellors"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#6ce3ff"
+                android:minHeight="100dp"
+                android:minWidth="100dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageButton
+                android:id="@+id/clinics"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#6ce3ff"
+                android:minHeight="100dp"
+                android:minWidth="100dp" />
+
+            <ImageButton
+                android:id="@+id/insurance"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#6ce3ff"
+                android:minHeight="100dp"
+                android:minWidth="100dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageButton
+                android:id="@+id/nurses"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#6ce3ff"
+                android:minHeight="100dp"
+                android:minWidth="100dp" />
+
+            <ImageButton
+                android:id="@+id/labs"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#6ce3ff"
+                android:minHeight="100dp"
+                android:minWidth="100dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
