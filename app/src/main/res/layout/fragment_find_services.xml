@@ -10,37 +10,6 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/titleBar"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <ImageButton
-                android:id="@+id/logo"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="0.15"
-                android:background="#000"
-                android:scaleType="fitCenter"
-                android:src="@drawable/placeholder"
-                android:layout_gravity="center_vertical" />
-
-            <TextView
-                android:id="@+id/appTitle"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="0.55"
-                android:background="#000"
-                android:fontFamily="sans-serif-light"
-                android:gravity="center_vertical"
-                android:text="Find A Service"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#fff" />
-
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/row1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
