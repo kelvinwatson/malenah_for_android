@@ -43,6 +43,12 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
         </activity>
+
+        <service
+            android:name=".FetchAllDataService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

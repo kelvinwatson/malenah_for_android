@@ -14,9 +14,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MapsActivity extends FragmentActivity {
     private ListView list;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private List<RowItem> rowItems = new ArrayList<RowItem>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +29,7 @@ public class MapsActivity extends FragmentActivity {
         setUpMapIfNeeded();
 
         /* Initialize List View */
-        String[] values = new String[] { "Dr. A",
+        String[] items = new String[] { "Dr. A",
                 "Dr. B",
                 "Dr. C",
                 "Dr. D",
@@ -34,7 +38,7 @@ public class MapsActivity extends FragmentActivity {
                 "Dr. G",
                 "Dr. H"
         };
-        ListAdapter adapter = new CustomAdapter(this,values);
+        ListAdapter adapter = new CustomAdapter(this,items);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

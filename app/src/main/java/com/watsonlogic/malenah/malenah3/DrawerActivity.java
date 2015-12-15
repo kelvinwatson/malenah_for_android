@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,11 +21,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DrawerActivity extends AppCompatActivity
         implements  MyFavoritesFragment.OnFragmentInteractionListener,
                     FindServicesFragment.OnFragmentInteractionListener,
                     LogoutFragment.OnFragmentInteractionListener,
                     NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    private List<RowItem> items = new ArrayList<RowItem>();
+    private User user = new User();
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -53,6 +63,26 @@ public class DrawerActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
+        /*TODO: Parse user data to user object and save */
+        final Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            String allDataStr = bundle.getString("allData");
+            try {
+                JSONObject allDataJSON = new JSONObject(allDataStr);
+                //items = parseData(allDataJSON, "data");
+                //user = parseUser(allDataJSON, "user");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else return;
     }
 
     @Override
@@ -62,12 +92,15 @@ public class DrawerActivity extends AppCompatActivity
         Fragment f = null;
         switch(position){
             case 0:
+                mTitle = "Find Services";
                 f = FindServicesFragment.newInstance("", "");//load fragment 0
                 break;
             case 1:
+                mTitle = "My Favorites";
                 f = MyFavoritesFragment.newInstance("", "");//load fragment 0
                 break;
             case 2:
+                mTitle = "Logout";
                 f = LogoutFragment.newInstance("", "");//load fragment 0
                 break;
         }
