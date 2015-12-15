@@ -25,14 +25,14 @@ public class MapsActivity extends FragmentActivity {
         setUpMapIfNeeded();
 
         /* Initialize List View */
-        String[] values = new String[] { "Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View"
+        String[] values = new String[] { "Dr. A",
+                "Dr. B",
+                "Dr. C",
+                "Dr. D",
+                "Dr. E",
+                "Dr. F",
+                "Dr. G",
+                "Dr. H"
         };
         ListAdapter adapter = new CustomAdapter(this,values);
         list = (ListView) findViewById(R.id.list);
