@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*TODO: Service to fetch data (see getData()) by calling startService(FetchAllDataService)*/
+        /*TODO: Call function to launch service to fetch data (see getData()) by calling startService(FetchAllDataService)*/
 
 
     }

@@ -1,5 +1,6 @@
 package com.watsonlogic.malenah.malenah3;
 
+import com.squareup.picasso.Picasso;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -11,10 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class CustomAdapter extends ArrayAdapter<String> {
+import java.util.ArrayList;
 
-    public CustomAdapter(Context context, String[] resources) {
+public class CustomAdapter extends ArrayAdapter<RowItem> {
+    Context context;
+
+    public CustomAdapter(Context context, ArrayList<RowItem> resources) {
         super(context, R.layout.custom_row, resources);
+        this.context=context;
     }
 
 
@@ -23,7 +28,9 @@ public class CustomAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View customRow = inflater.inflate(R.layout.custom_row, parent, false);
-        final String singleItem = getItem(position); //get reference to string array item
+        final RowItem item = getItem(position); //get reference to string array item
+
+        /* Reference views */
         ImageView rowIcon = (ImageView)customRow.findViewById(R.id.rowIcon); //get reference to rowIcon
         TextView rowName = (TextView)customRow.findViewById(R.id.rowName); //get reference to rowName
         TextView rowDescription = (TextView)customRow.findViewById(R.id.rowDescription);
@@ -48,12 +55,21 @@ public class CustomAdapter extends ArrayAdapter<String> {
             }
         });
 
-        rowIcon.setImageResource(R.drawable.mdplaceholder);
-        rowName.setText(singleItem);
-        rowDescription.setText("Some Description");
-        rowAddress.setText("Some Address");
-        rowNotes.setText("Some Notes");
-        distance.setText("0.9mi");
+        /* Set views */
+        Picasso.with(context)
+                .load(item.getIconURL())
+                .fit()
+                .centerInside()
+                .into(rowIcon);
+        //rowIcon.setImageResource(singleItem.getIconURL());
+        rowName.setText(item.getName());
+        rowDescription.setText(item.getDescription());
+        String address = item.getBuildingNumber()+" "+item.getStreetNumber()+" "+
+                item.getStreetName()+", "+item.getCity()+" "+item.getCountry()+" "+
+                item.getPostalCode();
+        rowAddress.setText(address);
+        rowNotes.setText(item.getNotes());
+        distance.setText(item.getDistance()+"mi");
         return customRow;
     }
 }

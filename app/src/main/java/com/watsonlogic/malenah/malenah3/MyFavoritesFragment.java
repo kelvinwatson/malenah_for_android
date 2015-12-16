@@ -71,6 +71,7 @@ public class MyFavoritesFragment extends Fragment {
 
         //WORKS String receivedStr = getArguments().getString("somePrettyKey");
         //WORKS Log.d("MyFavoritesFragment","Received="+receivedStr);
+        //TODO: Retrieve data (below code works)
         Bundle bundle = getArguments();
         ArrayList<RowItem> recvd;
         if(bundle != null){

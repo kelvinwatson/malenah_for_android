@@ -2,9 +2,9 @@ package com.watsonlogic.malenah.malenah3;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,7 +20,8 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity {
     private ListView list;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private List<RowItem> rowItems = new ArrayList<RowItem>();
+    private ArrayList<RowItem> rowItems = new ArrayList<RowItem>();
+    User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,18 +29,16 @@ public class MapsActivity extends FragmentActivity {
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
-        /* Initialize List View */
-        String[] items = new String[] { "Dr. A",
-                "Dr. B",
-                "Dr. C",
-                "Dr. D",
-                "Dr. E",
-                "Dr. F",
-                "Dr. G",
-                "Dr. H"
-        };
 
-        ListAdapter adapter = new CustomAdapter(this,items);
+        //TODO: Retrieve/receive data (below code works)
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null) {
+            user = (User)bundle.getSerializable("user");
+            rowItems = bundle.getParcelableArrayList("items");
+            Log.d("MapsActivity", "user=" + user);
+            Log.d("MapsActivity", "rowItems=" + rowItems);
+        }
+        ListAdapter adapter = new CustomAdapter(this, rowItems);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

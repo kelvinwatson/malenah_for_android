@@ -28,6 +28,7 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +38,9 @@ public class DrawerActivity extends AppCompatActivity
                     LogoutFragment.OnFragmentInteractionListener,
                     NavigationDrawerFragment.NavigationDrawerCallbacks {
 
-    private List<RowItem> items = new ArrayList<RowItem>();
+    private ArrayList<RowItem> items = new ArrayList<RowItem>();
     private User user = new User();
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -51,7 +53,76 @@ public class DrawerActivity extends AppCompatActivity
 
 
     public void launchMapsActivity(View v){
-        startActivity(new Intent(this, MapsActivity.class));
+        Intent mapsIntent = new Intent(this,MapsActivity.class);
+
+        //TODO: currently uses dummy data, but should be using user and items from
+        // database data. This data originates from MainActivity's call to a service, which broadcasts it
+        // back to MainActivity, and MainActivity then passes the data as an intent to this (DrawerActivity)'s onStart
+        // method, which extracts the data and saves it to variables in this class. So, we should be
+        // using that data, passing user and items array lists that were retrieved in this
+        // activity's onStart() method*/
+
+        //DUMMY DATA
+        user.setId(1325);
+        user.setFirstName("Kelvin");
+        user.setLastName("Watson");
+        user.setFavorites(null);
+
+        RowItem r0 = new RowItem("physicians",
+                0,
+                "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
+                "Amir Nassim and Associates",
+                "MD",
+                "Neurosurgery",
+                "good with brains!",
+                12,
+                3456,
+                "ABC Street",
+                "Portland",
+                "OR",
+                "United States",
+                "97201",
+                "good with brains!",
+                0.9,
+                false);
+        RowItem r1 = new RowItem("physicians",
+                1,
+                "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
+                "Sandra Anderson",
+                "MD",
+                "Family Practice",
+                "Celebrating 10 years in practice!",
+                33,
+                8913,
+                "DEF Boulevard",
+                "Portland",
+                "OR",
+                "United States",
+                "97201",
+                "Currently accepting new patients!",
+                1.5,
+                true);
+        RowItem r2 = new RowItem("physicians",
+                2,
+                "http://www.constantinebrown.com/wp-content/uploads/2013/11/photo_21418_20120211.jpg",
+                "William Bose",
+                "MD",
+                "Pediatrician",
+                "Reliable and caring!",
+                111,
+                2222,
+                "GHIJ Ave",
+                "Portland",
+                "OR",
+                "United States",
+                "97201",
+                "No longer accepting new patients",
+                9.2,
+                true);
+        items.add(r0); items.add(r1); items.add(r2);
+        mapsIntent.putExtra("user", (Serializable) user);
+        mapsIntent.putExtra("items", items);
+        startActivity(mapsIntent);
     }
 
     @Override
@@ -75,7 +146,7 @@ public class DrawerActivity extends AppCompatActivity
         super.onStart();
         /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
         /*TODO: Parse user data to user object and save */
-        final Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras(); //retrieve data on first onStart only
         if(bundle != null) {
             String allDataStr = bundle.getString("allData");
             try {
@@ -86,7 +157,7 @@ public class DrawerActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
-        else return;
+        else return; //bundle null , e.g. for subsequent onStarts(), no data is recv'd
     }
 
     @Override
@@ -116,7 +187,7 @@ public class DrawerActivity extends AppCompatActivity
                 0.9,
                 false);
         RowItem r1 = new RowItem("physicians",
-                0,
+                1,
                 "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
                 "Sandra Anderson",
                 "MD",
@@ -132,6 +203,23 @@ public class DrawerActivity extends AppCompatActivity
                 "Currently accepting new patients!",
                 1.5,
                 true);
+        RowItem r2 = new RowItem("physicians",
+                2,
+                "http://www.constantinebrown.com/wp-content/uploads/2013/11/photo_21418_20120211.jpg",
+                "William Bose",
+                "MD",
+                "Pediatrician",
+                "Reliable and caring!",
+                111,
+                2222,
+                "GHIJ Ave",
+                "Portland",
+                "OR",
+                "United States",
+                "97201",
+                "No longer accepting new patients",
+                9.2,
+                true);
         switch(position){
             case 0: {
                 mTitle = "Find Services";
@@ -140,6 +228,7 @@ public class DrawerActivity extends AppCompatActivity
                 ArrayList<RowItem> testList = new ArrayList<RowItem>();
                 testList.add(r0);
                 testList.add(r1);
+                testList.add(r2);
                 //bundle.putParcelableArrayList("testArrayList",testList);
                 f = FindServicesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
@@ -152,7 +241,7 @@ public class DrawerActivity extends AppCompatActivity
                 ArrayList<RowItem> testList = new ArrayList<RowItem>();
                 testList.add(r0);
                 testList.add(r1);
-                bundle.putParcelableArrayList("testArrayList",  testList);
+                bundle.putParcelableArrayList("testArrayList", testList);
                 f = MyFavoritesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
                 break;
