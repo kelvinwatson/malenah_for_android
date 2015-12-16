@@ -38,6 +38,7 @@ public class MapsActivity extends FragmentActivity {
                 "Dr. G",
                 "Dr. H"
         };
+
         ListAdapter adapter = new CustomAdapter(this,items);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);

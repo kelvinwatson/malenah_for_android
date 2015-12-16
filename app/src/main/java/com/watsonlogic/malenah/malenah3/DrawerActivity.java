@@ -2,7 +2,10 @@ package com.watsonlogic.malenah.malenah3;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.view.ActionMode;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -89,20 +93,78 @@ public class DrawerActivity extends AppCompatActivity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
+
+        /*TODO: Set data to be sent with the fragment */
         Fragment f = null;
+
+        /*Test items*/
+        RowItem r0 = new RowItem("physicians",
+                0,
+                "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
+                "Amir Nassim and Associates",
+                "MD",
+                "Neurosurgery",
+                "good with brains!",
+                12,
+                3456,
+                "ABC Street",
+                "Portland",
+                "OR",
+                "United States",
+                "97201",
+                "good with brains!",
+                0.9,
+                false);
+        RowItem r1 = new RowItem("physicians",
+                0,
+                "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
+                "Sandra Anderson",
+                "MD",
+                "Family Practice",
+                "Celebrating 10 years in practice!",
+                33,
+                8913,
+                "DEF Boulevard",
+                "Portland",
+                "OR",
+                "United States",
+                "97201",
+                "Currently accepting new patients!",
+                1.5,
+                true);
         switch(position){
-            case 0:
+            case 0: {
                 mTitle = "Find Services";
+                Bundle bundle = new Bundle();
+                //TEST: passing in arraylist of data to maps fragment
+                ArrayList<RowItem> testList = new ArrayList<RowItem>();
+                testList.add(r0);
+                testList.add(r1);
+                //bundle.putParcelableArrayList("testArrayList",testList);
                 f = FindServicesFragment.newInstance("", "");//load fragment 0
+                f.setArguments(bundle);
                 break;
-            case 1:
+            }case 1: {
                 mTitle = "My Favorites";
+                Bundle bundle = new Bundle();
+                //(WORKS) TEST: bundle.putString("somePrettyKey", "someBeautifulValue");
+                //(WORKS) TEST: Passing in array list to favorites fragment
+                ArrayList<RowItem> testList = new ArrayList<RowItem>();
+                testList.add(r0);
+                testList.add(r1);
+                bundle.putParcelableArrayList("testArrayList",  testList);
                 f = MyFavoritesFragment.newInstance("", "");//load fragment 0
+                f.setArguments(bundle);
                 break;
-            case 2:
+            }case 2: {
                 mTitle = "Logout";
                 f = LogoutFragment.newInstance("", "");//load fragment 0
                 break;
+            }default:{
+                mTitle = "Find Services";
+                f = FindServicesFragment.newInstance("", "");//load fragment 0
+                break;
+            }
         }
         fragmentManager.beginTransaction().replace(R.id.container, f).commit();
     }

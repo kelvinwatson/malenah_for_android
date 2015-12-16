@@ -3,10 +3,14 @@ package com.watsonlogic.malenah.malenah3;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
 
 
 /**
@@ -64,6 +68,18 @@ public class MyFavoritesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        //WORKS String receivedStr = getArguments().getString("somePrettyKey");
+        //WORKS Log.d("MyFavoritesFragment","Received="+receivedStr);
+        Bundle bundle = getArguments();
+        ArrayList<RowItem> recvd;
+        if(bundle != null){
+            recvd = bundle.getParcelableArrayList("testArrayList");
+            Log.d("MyFavoritesFragment","recvd"+recvd);
+            //Log.d("MyFavoritesFragment","receivedItems.get(0).getName()"+recvd.get(0).getId());
+            //Log.d("MyFavoritesFragment","receivedItems.get(1).getName()="+recvd.get(1));
+        }
+
         return inflater.inflate(R.layout.fragment_my_favorites, container, false);
     }
 
