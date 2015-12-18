@@ -25,9 +25,9 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
     }
 
 
-    //layout the custom row
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        /* layout the custom row */
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View customRow = inflater.inflate(R.layout.custom_row, parent, false);
         final RowItem item = getItem(position); //get reference to string array item

@@ -88,7 +88,7 @@ public class DrawerActivity extends AppCompatActivity
         RowItem r1 = new RowItem("physicians",
                 1,
                 "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
-                "Sandra Anderson",
+                "Olivia Benson",
                 "MD",
                 "Family Practice",
                 "Celebrating 10 years in practice!",
@@ -120,9 +120,15 @@ public class DrawerActivity extends AppCompatActivity
                 9.2,
                 true);
         /* Send the data to MapsActivity */
+        //TODO: May need to empty out the items arraylist as it seems to append data without
+        //regard to whether the item already exists in the arraylist
+        if(!items.isEmpty()){
+            items.clear(); //unsure if this is needed when finally using real data
+        }
         items.add(r0); items.add(r1); items.add(r2);
         mapsIntent.putExtra("user", (Serializable) user);
         mapsIntent.putExtra("items", items);
+        Log.d("DrawerActivity", "items=" + items.toString());
         startActivity(mapsIntent);
     }
 
