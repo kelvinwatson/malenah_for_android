@@ -38,7 +38,9 @@ public class MapsActivity extends FragmentActivity {
             Log.d("MapsActivity", "user=" + user);
             Log.d("MapsActivity", "rowItems=" + rowItems);
         }
-        ListAdapter adapter = new CustomAdapter(this, rowItems);
+
+        /* Using the above retreived data from */
+        ListAdapter adapter = new CustomAdapter(this, rowItems, user);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {

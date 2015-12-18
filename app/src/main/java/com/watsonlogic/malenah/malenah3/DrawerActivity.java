@@ -119,6 +119,7 @@ public class DrawerActivity extends AppCompatActivity
                 "No longer accepting new patients",
                 9.2,
                 true);
+        /* Send the data to MapsActivity */
         items.add(r0); items.add(r1); items.add(r2);
         mapsIntent.putExtra("user", (Serializable) user);
         mapsIntent.putExtra("items", items);

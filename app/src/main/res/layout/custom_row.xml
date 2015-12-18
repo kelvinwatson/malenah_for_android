@@ -100,7 +100,7 @@
                 android:layout_height="40dp"
                 android:textOn=""
                 android:textOff=""
-                android:background="@drawable/heart"
+                android:background="@drawable/toggle"
                 android:checked="false"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp" />
