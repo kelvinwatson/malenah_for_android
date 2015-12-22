@@ -3,9 +3,7 @@ package com.watsonlogic.malenah.malenah3;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
-public class RowItem implements Serializable, Parcelable{
+public class RowItem implements Parcelable{
     private String category;
     private int id;
     private String iconURL;
@@ -22,13 +20,13 @@ public class RowItem implements Serializable, Parcelable{
     private String postalCode;
     private String notes;
     private double distance;
-    private boolean favorited = false;
+    private boolean favourited;
 
     public RowItem(String category, int id, String iconURL,
                    String name, String designation, String specialty, String description,
                    int buildingNumber, int streetNumber, String streetName,
                    String city, String state, String country, String postalCode,
-                   String notes, double distance, boolean favorited){
+                   String notes, double distance, boolean favourited){
         this.category=category;
         this.id=id;
         this.iconURL=iconURL;
@@ -45,7 +43,7 @@ public class RowItem implements Serializable, Parcelable{
         this.postalCode=postalCode;
         this.notes=notes;
         this.distance=distance;
-        this.favorited=favorited;
+        this.favourited=favourited;
     }
 
 
@@ -66,6 +64,7 @@ public class RowItem implements Serializable, Parcelable{
         postalCode = in.readString();
         notes = in.readString();
         distance = in.readDouble();
+        favourited = (in.readInt()==0)?false:true;
     }
 
     public static final Creator<RowItem> CREATOR = new Creator<RowItem>() {
@@ -103,6 +102,7 @@ public class RowItem implements Serializable, Parcelable{
         dest.writeString(postalCode);
         dest.writeString(notes);
         dest.writeDouble(distance);
+        dest.writeInt(favourited?1:0);
     }
 
     public String getCategory() {
@@ -233,11 +233,11 @@ public class RowItem implements Serializable, Parcelable{
         this.distance = distance;
     }
 
-    public boolean isFavorited() {
-        return favorited;
+    public boolean isFavourited() {
+        return favourited;
     }
 
-    public void setFavorited(boolean favorited) {
-        this.favorited = favorited;
+    public void setFavourited(boolean favourited) {
+        this.favourited = favourited;
     }
 }

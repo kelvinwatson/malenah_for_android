@@ -3,6 +3,7 @@ package com.watsonlogic.malenah.malenah3;
 import com.squareup.picasso.Picasso;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,16 +60,18 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         distance.setText(item.getDistance()+"mi");
 
         ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
-        if(item.isFavorited()) {
+        if(item.isFavourited()) {
+            Log.d("CUSTOMADAPTER",item.getName()+" favorited");
             favoriteToggle.setChecked(true);
         } else {
+            Log.d("CUSTOMADAPTER",item.getName()+" NOT favorited");
             favoriteToggle.setChecked(false);
         }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final boolean isCheckedFinal = isChecked;
-                item.setFavorited(isChecked);
+                item.setFavourited(isChecked);
                 Intent updateFavorites = new Intent(context, UpdateFavorites.class);
                 try {
                     updateFavorites.putExtra("userID", user.getId());

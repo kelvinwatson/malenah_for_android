@@ -129,6 +129,10 @@ public class DrawerActivity extends AppCompatActivity
         mapsIntent.putExtra("user", (Serializable) user);
         mapsIntent.putExtra("items", items);
         Log.d("DrawerActivity", "items=" + items.toString());
+        for(int i=0; i<items.size(); i++){
+            Log.d("DrawerActivity", "name=" + items.get(i).getName());
+            Log.d("DrawerActivity", "isFave=" + items.get(i).isFavourited());
+        }
         startActivity(mapsIntent);
     }
 

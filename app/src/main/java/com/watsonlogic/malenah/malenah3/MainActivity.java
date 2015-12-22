@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager locationManager;
     private boolean GPSEnabled;
     private boolean networkEnabled;
+    static final int SET_LOCATION_REQUEST = 1;  // The request code
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,19 +44,18 @@ public class MainActivity extends AppCompatActivity {
 
             dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), SET_LOCATION_REQUEST);
                 }
             });
 
             dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    //nothing to do
+                public void onClick(DialogInterface dialog, int which) { //do nothing
+                    //TODO: disable login btn and disallow user to proceed
+                    //TODO: alert user with toast or dialog, on user network/GPS enabled, call onCreate again
                 }
             });
             dialog.show();
             return;
-            //TODO: disable login btn and disallow user to proceed
-            //TODO: alert user with toast or dialog, on user network/GPS enabled, call onCreate again
         }
         Log.d("LOCATION (network)", "enabled!");
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -67,6 +67,17 @@ public class MainActivity extends AppCompatActivity {
 
         /*TODO: Call function to launch service to fetch data (see getData()) by calling startService(FetchAllDataService)*/
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==SET_LOCATION_REQUEST) {
+            switch (requestCode) {
+                case 1:
+                    break;
+            }
+        }
     }
 
     public boolean checkLocationPermission() {

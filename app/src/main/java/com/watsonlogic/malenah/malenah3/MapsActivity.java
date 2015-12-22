@@ -37,6 +37,10 @@ public class MapsActivity extends FragmentActivity {
             rowItems = bundle.getParcelableArrayList("items");
             Log.d("MapsActivity", "user=" + user);
             Log.d("MapsActivity", "rowItems=" + rowItems);
+            for(int i=0; i<rowItems.size(); i++){
+                Log.d("MapsActivity", "name=" + rowItems.get(i).getName());
+                Log.d("MapsActivity", "isFave=" + rowItems.get(i).isFavourited());
+            }
         }
 
         /* Using the above retreived data from */
@@ -46,9 +50,9 @@ public class MapsActivity extends FragmentActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int itemPosition = position; //clicked item's index
+                //int itemPosition = position; //clicked item's index
                 String itemValue = (String) list.getItemAtPosition(position); //clicked item's value
-                Toast.makeText(getApplicationContext(), "Position :" + itemPosition + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Position :" + position + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
             }
         });
 
