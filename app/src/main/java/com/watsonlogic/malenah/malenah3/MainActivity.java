@@ -7,10 +7,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,10 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
     final Context context = this;
     private LocationManager locationManager;
-    private boolean GPSEnabled;
+    private boolean gpsEnabled;
     private boolean networkEnabled;
     static final int SET_LOCATION_REQUEST = 1;  // The request code
 
@@ -30,12 +35,74 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!isConnnected(getApplicationContext())) { //check connection
+            enableInternet();
+            return;
+        }else{ //internet connected
+            if (!enableLocation()) { //check Location
+                return;
+            }
+        }
+        /*TODO: Call function to launch service to fetch data (see getData()) by calling startService(FetchAllDataService)*/
+
+    }
+
+    protected void enableInternet(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("A network connection is required. Please turn on mobile network or WiFi in Settings.")
+                .setTitle("Unable to connect")
+                .setCancelable(false)
+                .setPositiveButton("Settings",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                                startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                            }
+                        }
+                )
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                MainActivity.this.finish();
+                            }
+                        }
+                );
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+    //http://stackoverflow.com/questions/28168867/check-internet-status-from-the-main-activity
+    public static boolean isConnnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    protected boolean enableLocation(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        }
+        if (checkLocationPermission()) {
+            Log.d("LOCATION (permission)", "user granted permission!");
+        } else {
+            Log.d("LOCATION (permission)", "permission denied!");
+            return false;
+        }
+        if  ((Build.VERSION.SDK_INT >= 23) &&
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
+            (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+            return false;
+        }
         //Source: http://stackoverflow.com/questions/15997079/getlastknownlocation-always-return-null-after-i-re-install-the-apk-file-via-ecli
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        GPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
+        gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
         networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network statu
         Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
-        if (!GPSEnabled || !networkEnabled){
+        if (!gpsEnabled && !networkEnabled){
             Log.d("LOCATION (GPS)", "disabled, ask user to enable!");
             //show dialog to allow user to enable location settings
             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -55,19 +122,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             dialog.show();
-            return;
+            return false;
+        } else if (gpsEnabled) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+            //TODO: in MapsActivity, do the following:
+            //if(locationManager!=null){
+            //  gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            //  location=gpsLocation;
+            //}
+        }else if (networkEnabled){
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,10,this);
+            //TODO: in MapsActivity, do the following:
+            //if(locationManager!=null){
+            //  networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            //  location=networkLocation;
+            //}
         }
-        Log.d("LOCATION (network)", "enabled!");
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        if (checkLocationPermission()) {
-            Log.d("LOCATION (permission)", "user granted permission!");
-        } else {
-            Log.d("LOCATION (permission)", "permission denied!");
-        }
-
-        /*TODO: Call function to launch service to fetch data (see getData()) by calling startService(FetchAllDataService)*/
-
+        return true;
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -84,6 +158,26 @@ public class MainActivity extends AppCompatActivity {
         String permission = "android.permission.ACCESS_FINE_LOCATION";
         int res = this.checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     /*TODO: Broadcast receiver class to receive the data broadcasted from FetchAllDataService */

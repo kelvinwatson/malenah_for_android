@@ -1,7 +1,20 @@
 package com.watsonlogic.malenah.malenah3;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,59 +22,119 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class MapsActivity extends FragmentActivity {
+public class MapsActivity extends FragmentActivity implements LocationListener {
+    private LocationManager locationManager;
+    private String provider;
+    private Location location;
     private ListView list;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private ArrayList<RowItem> rowItems = new ArrayList<RowItem>();
-    User user = new User();
+    private URL url;
+    private User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        setLocation();
+        getDataFromFindServicesFragment();
+        setUpListView();
+    }
 
+    protected void setLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            provider = locationManager.getBestProvider(new Criteria(), false);
+            if (provider != null) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                    return;
+                }
+                location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    Log.d("LOCATION (retrieval)", "Using last known location!");
+                    onLocationChanged(location);
+                } else { //get location using ip-api.com/json or use Portland as location fallback
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+                    location = new Location("");
+                    Log.d("LOCATION (check ptr)", location.toString());
+                    Log.d("LOCATION (retrieval)", "Using ip-api.com/json!");
+                    try {
+                        url = new URL("http://ip-api.com/json");
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                        setFailSafeLocation(location);
+                    }
+                    SetLocationFromIPAsyncTask asyncTask = new SetLocationFromIPAsyncTask(MapsActivity.this, url, location); //retrieve and parse JSON
+                    try {
+                        asyncTask.execute(); //set location asynchronously
+                    } catch (Exception e) {
+                        setFailSafeLocation(location);
+                    }
+                    //TODO: if(above call fail put in the portland lat lng
+                }
+            } else {
+                Log.d("LOCATION (provider)", "provider is null!");
+                setFailSafeLocation(location);
+            }
+        }
+    }
 
-        //TODO: Retrieve/receive data (below code works)
+    protected void getDataFromFindServicesFragment(){
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
-            user = (User)bundle.getSerializable("user");
+        if (bundle != null) {
+            user = (User) bundle.getSerializable("user");
             rowItems = bundle.getParcelableArrayList("items");
             Log.d("MapsActivity", "user=" + user);
             Log.d("MapsActivity", "rowItems=" + rowItems);
-            for(int i=0; i<rowItems.size(); i++){
+            for (int i = 0; i < rowItems.size(); i++) {
                 Log.d("MapsActivity", "name=" + rowItems.get(i).getName());
                 Log.d("MapsActivity", "isFave=" + rowItems.get(i).isFavourited());
             }
         }
+    }
 
-        /* Using the above retreived data from */
+    protected void setUpListView(){
         ListAdapter adapter = new CustomAdapter(this, rowItems, user);
         list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //int itemPosition = position; //clicked item's index
                 String itemValue = (String) list.getItemAtPosition(position); //clicked item's value
                 Toast.makeText(getApplicationContext(), "Position :" + position + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
             }
         });
 
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            return;
+        }
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
+        }
+        else locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
     }
 
     /**
@@ -99,6 +172,54 @@ public class MapsActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        //change zoom level between 2-21
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(45.517278, -122.678885), 13));
+        //place marker
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .position(new LatLng(45.517278, -122.678885))
+                .title("You are here"));    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Double lat = location.getLatitude();
+        Double lng = location.getLongitude();
+        mMap.clear();
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .position(new LatLng(lat, lng))
+                .title("You are here"));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 13));
+        Log.i("LOCATION (latitude)",lat.toString());
+        Log.i("LOCATION (longitude)",lng.toString());
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        try {
+            List<Address> listAddresses = geocoder.getFromLocation(lat,lng,1);
+            if(listAddresses != null && listAddresses.size()>0){
+                Log.i("LOCATION (place info)",listAddresses.get(0).toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    private void setFailSafeLocation(Location location){
+        location.setLatitude(45.5171);
+        location.setLongitude(-122.6819);
     }
 }
