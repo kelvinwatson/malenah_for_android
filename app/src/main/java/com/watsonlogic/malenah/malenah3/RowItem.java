@@ -19,6 +19,8 @@ public class RowItem implements Parcelable{
     private String country;
     private String postalCode;
     private String notes;
+    private double latitude;
+    private double longitude;
     private double distance;
     private boolean favourited;
 
@@ -26,7 +28,7 @@ public class RowItem implements Parcelable{
                    String name, String designation, String specialty, String description,
                    int buildingNumber, int streetNumber, String streetName,
                    String city, String state, String country, String postalCode,
-                   String notes, double distance, boolean favourited){
+                   String notes, double latitude, double longitude, double distance, boolean favourited){
         this.category=category;
         this.id=id;
         this.iconURL=iconURL;
@@ -42,6 +44,8 @@ public class RowItem implements Parcelable{
         this.country=country;
         this.postalCode=postalCode;
         this.notes=notes;
+        this.latitude=latitude;
+        this.longitude=longitude;
         this.distance=distance;
         this.favourited=favourited;
     }
@@ -63,6 +67,8 @@ public class RowItem implements Parcelable{
         country = in.readString();
         postalCode = in.readString();
         notes = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
         distance = in.readDouble();
         favourited = (in.readInt()==0)?false:true;
     }
@@ -101,6 +107,8 @@ public class RowItem implements Parcelable{
         dest.writeString(country);
         dest.writeString(postalCode);
         dest.writeString(notes);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
         dest.writeDouble(distance);
         dest.writeInt(favourited?1:0);
     }
@@ -223,6 +231,22 @@ public class RowItem implements Parcelable{
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public double getDistance() {

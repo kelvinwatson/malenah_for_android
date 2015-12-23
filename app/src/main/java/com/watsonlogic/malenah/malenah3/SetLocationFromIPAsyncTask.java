@@ -99,7 +99,7 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
                 e.printStackTrace();
                 setFailSafeLocation();
             }
-            Log.i("LOCATION (JSONStr)", jsonStr);
+            //Log.i("LOCATION (JSONStr)", jsonStr);
             if(!parseJSONString(jsonStr)){
                 setFailSafeLocation();
             }

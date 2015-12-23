@@ -69,7 +69,8 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="rowNotes"
                 android:textColor="#878787"
-                android:layout_marginBottom="5dp" />
+                android:layout_marginBottom="5dp"
+                android:fontFamily="sans-serif-light" />
 
         </LinearLayout>
 

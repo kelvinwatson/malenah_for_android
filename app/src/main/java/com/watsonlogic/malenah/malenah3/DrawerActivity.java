@@ -83,6 +83,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "good with brains!",
+                46.9,
+                -125,
                 0.9,
                 false);
         RowItem r1 = new RowItem("physicians",
@@ -100,6 +102,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "Currently accepting new patients!",
+                44.0,
+                -121,
                 1.5,
                 true);
         RowItem r2 = new RowItem("physicians",
@@ -117,6 +121,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "No longer accepting new patients",
+                45.8,
+                -123,
                 9.2,
                 true);
         /* Send the data to MapsActivity */
@@ -195,12 +201,14 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "good with brains!",
+                46.9,
+                -125,
                 0.9,
                 false);
         RowItem r1 = new RowItem("physicians",
                 1,
                 "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
-                "Sandra Anderson",
+                "Olivia Benson",
                 "MD",
                 "Family Practice",
                 "Celebrating 10 years in practice!",
@@ -212,6 +220,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "Currently accepting new patients!",
+                44.0,
+                -121,
                 1.5,
                 true);
         RowItem r2 = new RowItem("physicians",
@@ -229,6 +239,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "No longer accepting new patients",
+                45.8,
+                -123,
                 9.2,
                 true);
         switch(position){
