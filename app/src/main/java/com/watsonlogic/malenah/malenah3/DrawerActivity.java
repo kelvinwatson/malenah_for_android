@@ -201,8 +201,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "good with brains!",
-                46.9,
-                -125,
+                45.6,
+                -123,
                 0.9,
                 false);
         RowItem r1 = new RowItem("physicians",
@@ -220,8 +220,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "Currently accepting new patients!",
-                44.0,
-                -121,
+                45.8,
+                -122.3,
                 1.5,
                 true);
         RowItem r2 = new RowItem("physicians",
@@ -239,8 +239,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "No longer accepting new patients",
-                45.8,
-                -123,
+                45.6,
+                -122.7,
                 9.2,
                 true);
         switch(position){

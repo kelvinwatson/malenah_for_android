@@ -15,6 +15,7 @@ import java.util.Iterator;
 
 
 public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
+    private Context context;
     private double lat = Double.NEGATIVE_INFINITY;
     private double lng = Double.NEGATIVE_INFINITY;
     private URL url;
@@ -26,6 +27,7 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
     public SetLocationFromIPAsyncTask(Context context, URL url, Location location) {
         this.url = url;
         this.location = location;
+        this.context = context;
         Log.d("LOCATION(constructor)",location.toString());
     }
 
@@ -81,8 +83,6 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         return null;
     }
 
-
-
     private void setFailSafeLocation(){
         setLat(portlandORLat);
         setLng(portlandORLng);
@@ -113,8 +113,9 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         super.onPostExecute(s);
         location.setLatitude(getLat()); //set latitude
         location.setLongitude(getLng()); //set longitude
-        Log.d("LOCATION (manual)", "lat="+getLat()+" lng="+getLng());
+        Log.d("LOCATION (manual)", "lat=" + getLat() + " lng=" + getLng());
         Log.d("LOCATION (onPostExe)","asynctask done");
+        ((MapsActivity)this.context).locationDone(location);
     }
 
     public double getLat() {

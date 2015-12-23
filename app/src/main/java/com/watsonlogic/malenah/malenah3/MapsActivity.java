@@ -1,7 +1,6 @@
 package com.watsonlogic.malenah.malenah3;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -10,7 +9,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -45,16 +43,38 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
     private ArrayList<RowItem> rowItems = new ArrayList<RowItem>();
     private URL url;
     private User user = new User();
+    private double portlandORLat = 45.52;
+    private double portlandORLng = -122.6819;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        setUpMapIfNeeded();
         setLocation();
-        getDataFromFindServicesFragment();
-        setUpListView();
+        if(location!=null) {
+            setUpMapIfNeeded();
+            getDataFromFindServicesFragment();
+            setUpListView();
+            placeMarkers();
+        }
     }
+
+    //TODO: Set up markers on map based on rowItems
+    protected void placeMarkers(){
+        mMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .position(new LatLng(45.5, -123))
+                .title("BLAH"));
+        if(rowItems != null && rowItems.size()>0)
+            for(RowItem ri : rowItems){
+                Log.d("MapsActivity (marker)",ri.getLatitude()+" "+ri.getLongitude());
+                mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        .position(new LatLng(ri.getLatitude(), ri.getLongitude()))
+                        .title(ri.getName()));
+            }
+    }
+
 
     protected void setLocation() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -79,21 +99,30 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
                         url = new URL("http://ip-api.com/json");
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
-                        setFailSafeLocation(location);
+                        setFailSafeLocation();
                     }
-                    SetLocationFromIPAsyncTask asyncTask = new SetLocationFromIPAsyncTask(MapsActivity.this, url, location); //retrieve and parse JSON
+                    SetLocationFromIPAsyncTask asyncTask = new SetLocationFromIPAsyncTask(MapsActivity.this,url,location); //retrieve and parse JSON
                     try {
                         asyncTask.execute(); //set location asynchronously
                     } catch (Exception e) {
-                        setFailSafeLocation(location);
+                        setFailSafeLocation();
                     }
                     //TODO: if(above call fail put in the portland lat lng
                 }
             } else {
                 Log.d("LOCATION (provider)", "provider is null!");
-                setFailSafeLocation(location);
+                setFailSafeLocation();
             }
         }
+        Log.d("MapsActivity(setLoc)",location.getLatitude()+ " "+location.getLongitude());
+    }
+
+    protected void locationDone(Location location){
+        this.location = location;
+        onLocationChanged(location);
+        getDataFromFindServicesFragment();
+        setUpListView();
+        placeMarkers();
     }
 
     protected void getDataFromFindServicesFragment(){
@@ -173,15 +202,25 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
      */
     private void setUpMap() {
         //change zoom level between 2-21
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(45.517278, -122.678885), 13));
+        if(location==null || (location.getLatitude()==0.0 && location.getLongitude()==0.0)){
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(portlandORLat, portlandORLng), 13));
+            Log.d("MapsActivity animate", "using PDX");
+        } else {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 13));
+            Log.d("MapsActivity animate", location.getLatitude() + " " + location.getLongitude());
+        }
+
         //place marker
+        Log.d("MapsActivity","setUpMap(addMarker)");
         mMap.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .position(new LatLng(45.517278, -122.678885))
-                .title("You are here"));    }
+                .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                .title("You are here"));
+    }
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("onLocationChanged","called");
         Double lat = location.getLatitude();
         Double lng = location.getLongitude();
         mMap.clear();
@@ -201,6 +240,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        placeMarkers();
     }
 
     @Override
@@ -218,7 +258,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener {
 
     }
 
-    private void setFailSafeLocation(Location location){
+    private void setFailSafeLocation(){
         location.setLatitude(45.5171);
         location.setLongitude(-122.6819);
     }
