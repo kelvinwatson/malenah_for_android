@@ -1,45 +1,48 @@
 package com.watsonlogic.malenah.malenah3;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
-import android.inputmethodservice.Keyboard;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.view.ActionMode;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DrawerActivity extends AppCompatActivity
         implements  MyFavoritesFragment.OnFragmentInteractionListener,
                     FindServicesFragment.OnFragmentInteractionListener,
                     LogoutFragment.OnFragmentInteractionListener,
-                    NavigationDrawerFragment.NavigationDrawerCallbacks {
+                    NavigationDrawerFragment.NavigationDrawerCallbacks,
+                    android.location.LocationListener  {
 
     private ArrayList<RowItem> items = new ArrayList<RowItem>();
     private User user = new User();
+    private LocationManager locationManager;
+    private Location location = null;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -83,8 +86,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "good with brains!",
-                46.9,
-                -125,
+                45.5171,
+                -122.6811,
                 0.9,
                 false);
         RowItem r1 = new RowItem("physicians",
@@ -102,8 +105,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "Currently accepting new patients!",
-                44.0,
-                -121,
+                45.5128,
+                -122.6853,
                 1.5,
                 true);
         RowItem r2 = new RowItem("physicians",
@@ -121,8 +124,8 @@ public class DrawerActivity extends AppCompatActivity
                 "United States",
                 "97201",
                 "No longer accepting new patients",
-                45.8,
-                -123,
+                45.517539,
+                -122.679578,
                 9.2,
                 true);
         /* Send the data to MapsActivity */
@@ -134,6 +137,7 @@ public class DrawerActivity extends AppCompatActivity
         items.add(r0); items.add(r1); items.add(r2);
         mapsIntent.putExtra("user", (Serializable) user);
         mapsIntent.putExtra("items", items);
+        mapsIntent.putExtra("location", location);
         Log.d("DrawerActivity", "items=" + items.toString());
         for(int i=0; i<items.size(); i++){
             Log.d("DrawerActivity", "name=" + items.get(i).getName());
@@ -156,6 +160,62 @@ public class DrawerActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        //TODO: Retrieve location
+        getLocation();
+
+    }
+
+    protected void locationDone(Location location) {
+        this.location = location;
+        Log.d("DrawerActivity (locDone)", location.getLatitude() + " " + location.getLongitude());
+        if(location != null){
+            onLocationChanged(location);
+        }
+    }
+
+    protected void getLocation() {
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            String provider = locationManager.getBestProvider(new Criteria(), false);
+            if (provider != null) {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+                    return;
+                }
+                location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    Log.d("DrawerActivity", "Using last known location!");
+                } else { //get location using ip-api.com/json or use Portland as location fallback
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
+                    location = new Location("");
+                    Log.d("DrawerActivity", location.toString());
+                    Log.d("DrawerActivity", "Using ip-api.com/json!");
+                    URL url = null;
+                    try {
+                        url = new URL("http://ip-api.com/json");
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                        setFailSafeLocation();
+                    }
+                    SetLocationFromIPAsyncTask asyncTask = new SetLocationFromIPAsyncTask(DrawerActivity.this,url,location); //retrieve and parse JSON
+                    try {
+                        asyncTask.execute(); //set location asynchronously
+                    } catch (Exception e) {
+                        setFailSafeLocation();
+                    }
+                    //TODO: if(above call fail put in the portland lat lng
+                }
+            } else {
+                Log.d("DrawerActivity", "provider is null!");
+                setFailSafeLocation();
+            }
+        }
+    }
+
+    private void setFailSafeLocation(){
+        location.setLatitude(45.5171);
+        location.setLongitude(-122.6819);
     }
 
     @Override
@@ -333,6 +393,26 @@ public class DrawerActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
 
     }
 

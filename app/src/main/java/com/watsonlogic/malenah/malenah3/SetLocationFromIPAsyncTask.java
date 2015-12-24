@@ -115,7 +115,7 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         location.setLongitude(getLng()); //set longitude
         Log.d("LOCATION (manual)", "lat=" + getLat() + " lng=" + getLng());
         Log.d("LOCATION (onPostExe)","asynctask done");
-        ((MapsActivity)this.context).locationDone(location);
+        ((DrawerActivity)this.context).locationDone(location);
     }
 
     public double getLat() {
