@@ -19,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,21 +51,20 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
 
     @Override
     public void onMapReady(GoogleMap map) {
-        //TODO: use location to add marker, else use default latlng
         placeUserMarker(map);
         placeItemMarkers(map);
     }
 
     public void placeUserMarker(GoogleMap map){
         if(location!=null && userLatLng!=null){
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng,12));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 14));
             map.addMarker(new MarkerOptions()
                 .position(userLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .title("You are here"));
 
         } else{
-            map.moveCamera(CameraUpdateFactory.newLatLng(defaultLatLng));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 14));
             map.addMarker(new MarkerOptions()
                 .position(defaultLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
