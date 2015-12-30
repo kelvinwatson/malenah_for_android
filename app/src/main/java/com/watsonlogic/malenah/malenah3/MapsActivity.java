@@ -70,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .title("You are here"));
         }
-   }
+    }
 
     public void placeItemMarkers(GoogleMap map){
         if(rowItems != null && rowItems.size()>0)
@@ -134,8 +134,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String itemValue = (String) list.getItemAtPosition(position); //clicked item's value
-                Toast.makeText(getApplicationContext(), "Position :" + position + "  ListItem : " + itemValue, Toast.LENGTH_LONG).show();
+                RowItem ri = (RowItem) list.getItemAtPosition(position); //clicked item's value
+                Toast.makeText(getApplicationContext(), "Position :" + position + "  ListItem : " + ri.getName(), Toast.LENGTH_LONG).show();
             }
         });
 
