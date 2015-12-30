@@ -54,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
 
     public void computeDistances(){
         Log.d("AsyncTask","compute distances");
-        ComputeDistancesAsyncTask a = new ComputeDistancesAsyncTask(MapsActivity.this);
+        ComputeDistancesAsyncTask a = new ComputeDistancesAsyncTask(MapsActivity.this, rowItems);
         try{
             a.execute();
         }catch(Exception e){
@@ -162,8 +162,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         });
     }
 
-    public void distancesDone() {
-        ((ArrayAdapter) adapter).notifyDataSetChanged();
+    public void distancesDone(ArrayList<RowItem> rowItems) {
         Log.d("AsyncTask","Back in MapsActivity");
+        this.rowItems = rowItems;
+        ((ArrayAdapter) adapter).notifyDataSetChanged();
     }
 }
