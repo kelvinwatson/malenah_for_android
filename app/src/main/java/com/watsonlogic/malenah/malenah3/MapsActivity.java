@@ -129,7 +129,9 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
     }
 
     protected void updateMapCenter(LatLng l, Marker marker){
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 14));
+        //map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 14));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(l,14));
+        //TODO: animate camera instead of move
         marker.showInfoWindow();
     }
 
@@ -141,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RowItem ri = (RowItem) list.getItemAtPosition(position); //clicked item's value
-                Toast.makeText(getApplicationContext(), "Clicked position :" + position + "  ListItem : " + ri.getName(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Clicked position :" + position + "  ListItem : " + ri.getName(), Toast.LENGTH_LONG).show();
                 updateMapCenter(new LatLng(ri.getLatitude(),ri.getLongitude()), ri.getMapMarker());
             }
         });
