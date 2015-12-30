@@ -1,0 +1,14 @@
+GOOGLE MAPS TODO's
+-------------------
+
+GEOCODING: https://developers.google.com/maps/documentation/geocoding/intro
+
+When users provide an address to be placed into database, use Geocoding to convert address to a double lat and double lng and store in database.
+
+
+Geocoding is the process of converting addresses (like "1600 Amphitheatre Parkway, Mountain View, CA") into  geographic coordinates (like latitude 37.423021 and longitude -122.083739), which you can use to place markers on a map, or position the map. Reverse geocoding is the process of converting geographic coordinates into a human-readable address. The Google Maps Geocoding API's reverse geocoding service also lets you find the address for a given place ID. The Google Maps Geocoding API provides a direct way to access these services via an HTTP request.
+
+--------------
+DIRECTIONS API: http://stackoverflow.com/questions/6456090/android-google-map-finding-distance
+Calculate the distance in the app based on user lat lng and destination lat lng
+
