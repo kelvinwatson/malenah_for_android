@@ -3,6 +3,8 @@ package com.watsonlogic.malenah.malenah3;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.maps.model.Marker;
+
 public class RowItem implements Parcelable{
     private String category;
     private int id;
@@ -23,6 +25,7 @@ public class RowItem implements Parcelable{
     private double longitude;
     private double distance;
     private boolean favourited;
+    private Marker mapMarker;
 
     public RowItem(String category, int id, String iconURL,
                    String name, String designation, String specialty, String description,
@@ -263,5 +266,13 @@ public class RowItem implements Parcelable{
 
     public void setFavourited(boolean favourited) {
         this.favourited = favourited;
+    }
+
+    public Marker getMapMarker() {
+        return mapMarker;
+    }
+
+    public void setMapMarker(Marker mapMarker) {
+        this.mapMarker = mapMarker;
     }
 }

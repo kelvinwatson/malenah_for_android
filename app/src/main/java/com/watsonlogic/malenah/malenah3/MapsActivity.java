@@ -1,6 +1,5 @@
 package com.watsonlogic.malenah.malenah3;
 
-
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +34,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
     private User user = new User();
     private LatLng defaultLatLng = new LatLng(45.52,-122.6819);
     private LatLng userLatLng = null;
+    private GoogleMap map;
+    private Marker userMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,39 +49,38 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         setUpListView();
     }
 
-
-
     @Override
     public void onMapReady(GoogleMap map) {
-        placeUserMarker(map);
-        placeItemMarkers(map);
+        this.map=map;
+        placeUserMarker();
+        placeItemMarkers();
     }
 
-    public void placeUserMarker(GoogleMap map){
+    public void placeUserMarker(){
         if(location!=null && userLatLng!=null){
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 14));
-            map.addMarker(new MarkerOptions()
+            userMarker = map.addMarker(new MarkerOptions()
                 .position(userLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .title("You are here"));
 
         } else{
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 14));
-            map.addMarker(new MarkerOptions()
+            userMarker = map.addMarker(new MarkerOptions()
                 .position(defaultLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .title("You are here"));
         }
     }
 
-    public void placeItemMarkers(GoogleMap map){
+    public void placeItemMarkers(){
         if(rowItems != null && rowItems.size()>0)
             for(RowItem ri : rowItems){
-                Log.d("MapsActivity (marker)",ri.getLatitude()+" "+ri.getLongitude());
-                map.addMarker(new MarkerOptions()
+                Log.d("MapsActivity (marker)", ri.getLatitude() + " " + ri.getLongitude());
+                ri.setMapMarker(map.addMarker(new MarkerOptions()
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         .position(new LatLng(ri.getLatitude(), ri.getLongitude()))
-                        .title(ri.getName()));
+                        .title(ri.getName())));
             }
     }
 
@@ -127,6 +128,11 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         }
     }
 
+    protected void updateMapCenter(LatLng l, Marker marker){
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 14));
+        marker.showInfoWindow();
+    }
+
     protected void setUpListView(){
         ListAdapter adapter = new CustomAdapter(this, rowItems, user);
         list = (ListView) findViewById(R.id.list);
@@ -135,7 +141,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RowItem ri = (RowItem) list.getItemAtPosition(position); //clicked item's value
-                Toast.makeText(getApplicationContext(), "Position :" + position + "  ListItem : " + ri.getName(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Clicked position :" + position + "  ListItem : " + ri.getName(), Toast.LENGTH_LONG).show();
+                updateMapCenter(new LatLng(ri.getLatitude(),ri.getLongitude()), ri.getMapMarker());
             }
         });
 
