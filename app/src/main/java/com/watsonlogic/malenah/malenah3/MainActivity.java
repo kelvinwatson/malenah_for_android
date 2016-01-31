@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
         networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network statu
-        Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
+        //Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
         if (!gpsEnabled && !networkEnabled){
             Log.d("LOCATION (GPS)", "disabled, ask user to enable!");
             //show dialog to allow user to enable location settings
@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return false;
         } else if (gpsEnabled) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+            Log.d("LOCATION (GPS)", LocationManager.GPS_PROVIDER);
             //TODO: in MapsActivity, do the following:
             //if(locationManager!=null){
             //  gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -171,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             //}
         }else if (networkEnabled){
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,10,this);
+            Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
             //TODO: in MapsActivity, do the following:
             //if(locationManager!=null){
             //  networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);

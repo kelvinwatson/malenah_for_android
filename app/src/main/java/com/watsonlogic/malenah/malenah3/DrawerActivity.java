@@ -167,49 +167,59 @@ public class DrawerActivity extends AppCompatActivity
 
     protected void locationDone(Location location) {
         this.location = location;
-        Log.d("DrawerActivity (locDone)", location.getLatitude() + " " + location.getLongitude());
+        Log.d("DrawerActivity(locDone)", location.getLatitude()+" "+location.getLongitude());
         if(location != null){
             onLocationChanged(location);
         }
     }
 
+    //http://stackoverflow.com/questions/15997079/getlastknownlocation-always-return-null-after-i-re-install-the-apk-file-via-ecli
     protected void getLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            Log.d("LOCATION","PERMISSION NOT SET!");
+            return;
+        }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            String provider = locationManager.getBestProvider(new Criteria(), false);
-            if (provider != null) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-                    return;
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (gpsEnabled||networkEnabled) {
+            if(networkEnabled){
+                Log.d("LOCATION", "NETWORK Enabled");
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
+                if(locationManager!=null){
+                    location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
-                location = locationManager.getLastKnownLocation(provider);
-                if (location != null) {
-                    Log.d("DrawerActivity", "Using last known location!");
-                } else { //get location using ip-api.com/json or use Portland as location fallback
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
-                    location = new Location("");
-                    Log.d("DrawerActivity", location.toString());
-                    Log.d("DrawerActivity", "Using ip-api.com/json!");
-                    URL url = null;
-                    try {
-                        url = new URL("http://ip-api.com/json");
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                        setFailSafeLocation();
-                    }
-                    SetLocationFromIPAsyncTask asyncTask = new SetLocationFromIPAsyncTask(DrawerActivity.this,url,location); //retrieve and parse JSON
-                    try {
-                        asyncTask.execute(); //set location asynchronously
-                    } catch (Exception e) {
-                        setFailSafeLocation();
-                    }
-                    //TODO: if(above call fail put in the portland lat lng
+            } else if(gpsEnabled){
+                Log.d("LOCATION", "GPS Enabled");
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
+                if(locationManager!=null){
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 }
-            } else {
-                Log.d("DrawerActivity", "provider is null!");
-                setFailSafeLocation();
             }
+            if (location != null) {
+                Log.d("LOCATION", "Using last known location!");
+            } else { //get location from GPS, or using ip-api.com/json or use Portland as location fallback
+                location = new Location("");
+                Log.d("LOCATION", "Using ip-api.com/json!");
+                URL url = null;
+                try {
+                    url = new URL("http://ip-api.com/json");
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                    setFailSafeLocation();
+                }
+                SetLocationFromIPAsyncTask asyncTask = new SetLocationFromIPAsyncTask(DrawerActivity.this,url,location); //retrieve and parse JSON
+                try {
+                    asyncTask.execute(); //set location asynchronously
+                } catch (Exception e) {
+                    setFailSafeLocation();
+                }
+                //TODO: if(above call fail put in the portland lat lng
+            }
+        } else {
+            Log.d("LOCATION","Neither NETWORK_PROVIDER nor GPS enabled!"); //unlikely due to mainActivity's check
+            setFailSafeLocation();
         }
     }
 

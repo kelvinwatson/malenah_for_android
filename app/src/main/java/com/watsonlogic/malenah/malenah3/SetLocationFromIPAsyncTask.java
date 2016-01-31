@@ -43,10 +43,12 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
                             setLat(Double.parseDouble(jsonObj.get(key).toString()));
                             Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
                             Log.d("LOCATION JSON (double) ", Double.toString(lat));
+                            Log.d("LOCATION", "Location set from IP-API.com");
                         } else if (key.equals("lon")) {
                             setLng(Double.parseDouble(jsonObj.get(key).toString()));
                             Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
                             Log.d("LOCATION JSON (double) ", Double.toString(lng));
+                            Log.d("LOCATION", "Location set from IP-API.com");
                         }
                     }
                     if (getLat() > Double.NEGATIVE_INFINITY && getLat() > Double.NEGATIVE_INFINITY) {
@@ -88,6 +90,7 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
     }
 
     private void setFailSafeLocation(){
+        Log.d("LOCATION","setting failsafe");
         setLat(portlandORLat);
         setLng(portlandORLng);
     }
