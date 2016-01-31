@@ -31,28 +31,32 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         Log.d("LOCATION(constructor)",location.toString());
     }
 
-    private Boolean parseJSONString(String jsonStr){
+    private Boolean parseJSONString(String jsonStr) {
         try {
-            JSONObject jsonObj = new JSONObject(jsonStr);
-            if (jsonObj != null) {
-                Iterator<String> itr = jsonObj.keys();
-                while (itr.hasNext()) {
-                    String key = itr.next();
-                    if (key.equals("lat")) {
-                        setLat(Double.parseDouble(jsonObj.get(key).toString()));
-                        Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
-                        Log.d("LOCATION JSON (double) ",Double.toString(lat));
-                    } else if (key.equals("lon")) {
-                        setLng(Double.parseDouble(jsonObj.get(key).toString()));
-                        Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
-                        Log.d("LOCATION JSON (double) ",Double.toString(lng));
+            if (jsonStr != null) {
+                JSONObject jsonObj = new JSONObject(jsonStr);
+                if (jsonObj != null) {
+                    Iterator<String> itr = jsonObj.keys();
+                    while (itr.hasNext()) {
+                        String key = itr.next();
+                        if (key.equals("lat")) {
+                            setLat(Double.parseDouble(jsonObj.get(key).toString()));
+                            Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
+                            Log.d("LOCATION JSON (double) ", Double.toString(lat));
+                        } else if (key.equals("lon")) {
+                            setLng(Double.parseDouble(jsonObj.get(key).toString()));
+                            Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
+                            Log.d("LOCATION JSON (double) ", Double.toString(lng));
+                        }
                     }
-                }
-                if(getLat()>Double.NEGATIVE_INFINITY && getLat()>Double.NEGATIVE_INFINITY){
-                    return true;
+                    if (getLat() > Double.NEGATIVE_INFINITY && getLat() > Double.NEGATIVE_INFINITY) {
+                        return true;
+                    }
+                } else {
+                    return false; //jsonObj is null
                 }
             }
-        }catch (JSONException e) {
+        } catch (JSONException e) {
             Log.e("parseJSONString()", "error");
         }
         return false;
@@ -95,16 +99,17 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
             String jsonStr = null;
             try {
                 jsonStr = retrieveJSON();
+                if(!parseJSONString(jsonStr)){
+                    setFailSafeLocation();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
                 setFailSafeLocation();
             }
-            //Log.i("LOCATION (JSONStr)", jsonStr);
-            if(!parseJSONString(jsonStr)){
-                setFailSafeLocation();
-            }
-            urlConnection.disconnect();
-        } else setFailSafeLocation();
+        } else {
+            setFailSafeLocation();
+        }
+        urlConnection.disconnect();
         return "done";
     }
 

@@ -40,10 +40,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     protected void onStart() {
         super.onStart();
-        if(!isConnnected(getApplicationContext())) { //check connection
+        if(!isFullyConnected(getApplicationContext())) { //check connection
+            Log.d("NETWORK","not connected");
             enableInternet();
             return;
         }else{ //internet connected
+            Log.d("NETWORK","connected");
             if (!enableLocation()) { //check Location
                 return;
             }
@@ -76,10 +78,47 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         alert.show();
     }
     //http://stackoverflow.com/questions/28168867/check-internet-status-from-the-main-activity
-    public static boolean isConnnected(Context context) {
+    public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        if (activeNetwork != null && activeNetwork.isConnected()) {
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public boolean isConnectedMobile(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if(info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_MOBILE) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isConnectedWifi(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if (info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isFullyConnected(Context context){
+        if (isNetworkAvailable(context)){
+            Log.d("NETWORK","available");
+            if(isConnectedMobile(context)){
+                Log.d("NETWORK","mobile connected");
+                return true;
+            }
+            if(isConnectedWifi(context)){
+                Log.d("NETWORK","wifi connected");
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean enableLocation(){
