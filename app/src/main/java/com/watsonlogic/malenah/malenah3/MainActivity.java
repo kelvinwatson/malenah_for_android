@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,6 +23,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+
+import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     final Context context = this;
@@ -29,30 +33,72 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private boolean gpsEnabled;
     private boolean networkEnabled;
     static final int SET_LOCATION_REQUEST = 1;  // The request code
+    private DataReceiver dataReceiver;
+    private String providers;
+    private Button startButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        startButton = (Button)findViewById(R.id.startButton); //get reference to button
      }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        startButton.setEnabled(false); //disable start button until all data retrieved
+
         if(!isFullyConnected(getApplicationContext())) { //check connection
             Log.d("NETWORK","not connected");
             enableInternet();
             return;
         }else{ //internet connected
+            getData();
             Log.d("NETWORK","connected");
             if (!enableLocation()) { //check Location
                 return;
             }
         }
-        /*TODO: Call function to launch service to fetch data (see getData()) by calling startService(FetchAllDataService)*/
-
     }
+
+    protected void getData() {
+        /* Register receiver for data */
+        IntentFilter filter = new IntentFilter("com.watsonlogic.malenah.malenah3.providers");
+        dataReceiver = new DataReceiver();
+        registerReceiver(dataReceiver, filter);
+        /* Start the service to fetch data */
+        Intent fetchIntent = new Intent(this, FetchAllDataService.class);
+        Log.d("FETCH","Main, starting service to fetch data");
+        startService(fetchIntent);
+    }
+
+    /*TODO: Broadcast receiver class to receive the data broadcasted from FetchAllDataService */
+    public class DataReceiver extends BroadcastReceiver{
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            /*TODO: Launch Drawer Activity once allData (incl. user details) string (a JSON string) received from FetchAllDataService*/
+            Log.d("FETCH", "back in Main, onReceive()");
+            providers = intent.getStringExtra("providers");
+            Log.d("FETCH","in Main, providers="+providers);
+            Intent loginIntent = new Intent(MainActivity.this, DrawerActivity.class);
+            loginIntent.putExtra("providers", providers);
+            Log.d("FETCH", "Launch button enabled");
+            startButton.setEnabled(true);
+
+            /*TODO: (see MyReceiver extends BroadcastReceiver onReceive method in MainActivity */
+            /*TODO: save received broadcasted data into String allData using intent.getStringExtras*/
+            /*TODO: Pass in the above allData string to DrawerActivity using Intent drawerActivity = newIntent(this,drawerActivity.class)*/
+            /*TODO: then call startActivity(drawerActivity)*/
+            /* Notice that startActivity is only called once all the data has been retrieved from database */
+        }
+    }
+
+    public void launchDrawerActivity(View v) {
+        startActivity(new Intent(this, DrawerActivity.class));
+    }
+
 
     protected void enableInternet(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -221,22 +267,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    /*TODO: Broadcast receiver class to receive the data broadcasted from FetchAllDataService */
-    public class Receiver extends BroadcastReceiver{
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            /*TODO: Launch Drawer Activity once allData (incl. user details) string (a JSON string) received from FetchAllDataService*/
-            /*TODO: (see MyReceiver extends BroadcastReceiver onReceive method in MainActivity */
-            /*TODO: save received broadcasted data into String allData using intent.getStringExtras*/
-            /*TODO: Pass in the above allData string to DrawerActivity using Intent drawerActivity = newIntent(this,drawerActivity.class)*/
-            /*TODO: then call startActivity(drawerActivity)*/
-            /* Notice that startActivity is only called once all the data has been retrieved from database */
-        }
-    }
-
-    public void launchDrawerActivity(View v) {
-        startActivity(new Intent(this, DrawerActivity.class));
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -259,4 +289,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        try {
+            unregisterReceiver(dataReceiver);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            unregisterReceiver(dataReceiver);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
+

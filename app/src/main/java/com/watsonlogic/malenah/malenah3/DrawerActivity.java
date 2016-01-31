@@ -190,7 +190,8 @@ public class DrawerActivity extends AppCompatActivity
                 if(locationManager!=null){
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
-            } else if(gpsEnabled){
+            }
+            if(location==null && gpsEnabled){
                 Log.d("LOCATION", "GPS Enabled");
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
                 if(locationManager!=null){
