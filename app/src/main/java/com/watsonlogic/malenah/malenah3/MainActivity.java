@@ -30,6 +30,9 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 public class MainActivity extends AppCompatActivity implements LocationListener {
     final Context context = this;
     private LocationManager locationManager;
@@ -74,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 return;
             }
         }
+        //practice a post here?
+        Log.d("POSTREVIEW","execute async task from MainActivity()");
+        new PostReviewAsyncTask().execute();
+
     }
 
     protected void getData() {
