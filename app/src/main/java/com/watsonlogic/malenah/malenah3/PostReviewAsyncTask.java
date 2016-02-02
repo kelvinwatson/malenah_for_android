@@ -38,7 +38,7 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
 
         //set params
         Map<String,String> dummyParams = new LinkedHashMap<>();
-        dummyParams.put("username", "watsokel12345");
+        dummyParams.put("username", "watsokel1234567890");
         dummyParams.put("rating", "4.6");
         dummyParams.put("comment", "Posting a comment from Android application");
         dummyParams.put("provider", "5629499534213120");
@@ -79,10 +79,14 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
             e.printStackTrace();
         }
         Reader in = null;
-        try{
+        try {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            for ( int c = in.read(); c != -1; c = in.read() )
-                System.out.print((char)c);
+            String response = "";
+            for (int c = in.read(); c != -1; c = in.read()){
+                //System.out.print((char)c);
+                response += (char) c;
+            }
+            Log.d("POSTREVIEW response=",response);
         } catch(IOException e){
             e.printStackTrace();
         }
