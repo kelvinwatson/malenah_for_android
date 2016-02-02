@@ -29,13 +29,15 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
-                android:background="#6ce3ff"
+                android:background="#000"
                 android:minHeight="100dp"
                 android:minWidth="100dp"
-                android:onClick="launchMapsActivity" />
+                android:onClick="launchMapsActivity"
+                android:scaleType="fitCenter" />
+
 
             <ImageButton
-                android:id="@+id/counsellors"
+                android:id="@+id/nurses"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:layout_marginBottom="5dp"
@@ -43,11 +45,14 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
-                android:background="#6ce3ff"
+                android:background="#000"
                 android:minHeight="100dp"
-                android:minWidth="100dp" />
+                android:minWidth="100dp"
+                android:scaleType="fitCenter"
+                android:contentDescription="nurse icon" />
 
         </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/row2"
@@ -60,31 +65,39 @@
             android:orientation="horizontal"
             android:weightSum="1">
 
-            <ImageButton
-                android:id="@+id/clinics"
+            <TextView
+                android:id="@+id/physicians_text"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="20dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
-                android:background="#6ce3ff"
+                android:background="#000"
                 android:minHeight="100dp"
-                android:minWidth="100dp" />
+                android:minWidth="100dp"
+                android:text="Physicians"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-            <ImageButton
-                android:id="@+id/insurance"
+            <TextView
+                android:id="@+id/nurses_text"
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="20dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
-                android:background="#6ce3ff"
+                android:background="#000"
                 android:minHeight="100dp"
-                android:minWidth="100dp" />
+                android:minWidth="100dp"
+                android:text="Nurse Practitioners"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 
@@ -100,7 +113,7 @@
             android:weightSum="1">
 
             <ImageButton
-                android:id="@+id/nurses"
+                android:id="@+id/counselors"
                 android:layout_width="0dp"
                 android:layout_height="150dp"
                 android:layout_marginBottom="5dp"
@@ -108,9 +121,10 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
-                android:background="#6ce3ff"
+                android:background="#000"
                 android:minHeight="100dp"
-                android:minWidth="100dp" />
+                android:minWidth="100dp"
+                android:scaleType="fitCenter" />
 
             <ImageButton
                 android:id="@+id/labs"
@@ -121,11 +135,145 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="0.5"
-                android:background="#6ce3ff"
+                android:background="#000"
                 android:minHeight="100dp"
-                android:minWidth="100dp" />
+                android:minWidth="100dp"
+                android:scaleType="fitCenter" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/row4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/counselor_text"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#000"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:text="Counseling"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/labs_text"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#000"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:text="Lab Services"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <ImageButton
+                android:id="@+id/chiropractors"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#000"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:scaleType="fitCenter" />
+
+            <ImageButton
+                android:id="@+id/insurance"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#000"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:scaleType="fitCenter" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/row6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/chiropractors_text"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#000"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:text="Chiropractors"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/insurance_text"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="0.5"
+                android:background="#000"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:text="Insurance"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

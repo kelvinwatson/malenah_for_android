@@ -23,6 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +46,7 @@ public class DrawerActivity extends AppCompatActivity
     private User user = new User();
     private LocationManager locationManager;
     private Location location = null;
-
+    private Context context;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -74,10 +77,10 @@ public class DrawerActivity extends AppCompatActivity
         RowItem r0 = new RowItem("physicians",
                 0,
                 "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
-                "Amir Nassim and Associates",
+                "Amir Nassim",
                 "MD",
                 "Neurosurgery",
-                "good with brains!",
+                "AN and Associates!",
                 12,
                 3456,
                 "ABC Street",
@@ -96,7 +99,7 @@ public class DrawerActivity extends AppCompatActivity
                 "Olivia Benson",
                 "MD",
                 "Family Practice",
-                "Celebrating 10 years in practice!",
+                "Benson Inc.",
                 33,
                 8913,
                 "DEF Boulevard",
@@ -115,7 +118,7 @@ public class DrawerActivity extends AppCompatActivity
                 "William Bose",
                 "MD",
                 "Pediatrician",
-                "Reliable and caring!",
+                "Bose Health!",
                 111,
                 2222,
                 "GHIJ Ave",
@@ -160,10 +163,15 @@ public class DrawerActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        //load icons
+
         //TODO: Retrieve location
         getLocation();
 
     }
+
+
+
 
     protected void locationDone(Location location) {
         this.location = location;

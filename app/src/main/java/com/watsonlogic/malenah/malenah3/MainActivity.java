@@ -24,6 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -42,7 +45,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startButton = (Button)findViewById(R.id.startButton); //get reference to button
+        loadIcon();
      }
+
+    public void loadIcon(){
+        ImageView titleIcon = (ImageView)findViewById(R.id.titleIcon); //get reference to rowIcon
+        Picasso.with(context)
+                .load(R.drawable.malenah_icon)
+                .fit()
+                .centerInside()
+                .into(titleIcon);
+    }
 
     @Override
     protected void onStart() {

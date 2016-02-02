@@ -12,7 +12,7 @@ public class RowItem implements Parcelable{
     private String name;
     private String designation;
     private String specialty;
-    private String description;
+    private String organization;
     private int buildingNumber = -1;
     private int streetNumber;
     private String streetName;
@@ -28,7 +28,7 @@ public class RowItem implements Parcelable{
     private Marker mapMarker;
 
     public RowItem(String category, int id, String iconURL,
-                   String name, String designation, String specialty, String description,
+                   String name, String designation, String specialty, String organization,
                    int buildingNumber, int streetNumber, String streetName,
                    String city, String state, String country, String postalCode,
                    String notes, double latitude, double longitude, double distance, boolean favourited){
@@ -38,7 +38,7 @@ public class RowItem implements Parcelable{
         this.name=name;
         this.designation=designation;
         this.specialty=specialty;
-        this.description=description;
+        this.organization=organization;
         this.buildingNumber=buildingNumber;
         this.streetNumber=streetNumber;
         this.streetName=streetName;
@@ -61,7 +61,7 @@ public class RowItem implements Parcelable{
         name = in.readString();
         designation = in.readString();
         specialty = in.readString();
-        description = in.readString();
+        organization = in.readString();
         buildingNumber = in.readInt();
         streetNumber = in.readInt();
         streetName = in.readString();
@@ -101,7 +101,7 @@ public class RowItem implements Parcelable{
         dest.writeString(name);
         dest.writeString(designation);
         dest.writeString(specialty);
-        dest.writeString(description);
+        dest.writeString(organization);
         dest.writeInt(buildingNumber);
         dest.writeInt(streetNumber);
         dest.writeString(streetName);
@@ -164,12 +164,12 @@ public class RowItem implements Parcelable{
         this.specialty = specialty;
     }
 
-    public String getDescription() {
-        return description;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
     public int getBuildingNumber() {

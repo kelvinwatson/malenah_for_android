@@ -1,6 +1,7 @@
 package com.watsonlogic.malenah.malenah3;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 
 /**
@@ -62,11 +66,60 @@ public class FindServicesFragment extends Fragment {
         }
     }
 
+
+
+    public void loadIcons(View rv){
+        Context context = getActivity();
+
+        ImageView doctorIcon = (ImageView)rv.findViewById(R.id.physicians); //get reference
+        Picasso.with(context)
+                .load(R.drawable.doctor_icon)
+                .fit()
+                .centerInside()
+                .into(doctorIcon);
+        ImageView nurseIcon = (ImageView)rv.findViewById(R.id.nurses);
+        Picasso.with(context)
+                .load(R.drawable.nurse_icon)
+                .fit()
+                .centerInside()
+                .into(nurseIcon);
+        ImageView counselorIcon = (ImageView)rv.findViewById(R.id.counselors);
+        Picasso.with(context)
+                .load(R.drawable.counselor_icon)
+                .fit()
+                .centerInside()
+                .into(counselorIcon);
+        ImageView labIcon = (ImageView)rv.findViewById(R.id.labs);
+        Picasso.with(context)
+                .load(R.drawable.lab_icon)
+                .fit()
+                .centerInside()
+                .into(labIcon);
+        ImageView chiropractorIcon = (ImageView)rv.findViewById(R.id.chiropractors);
+        Picasso.with(context)
+                .load(R.drawable.chiropractor_icon)
+                .fit()
+                .centerInside()
+                .into(chiropractorIcon);
+        ImageView insuranceIcon = (ImageView)rv.findViewById(R.id.insurance);
+        Picasso.with(context)
+                .load(R.drawable.insurance_icon)
+                .fit()
+                .centerInside()
+                .into(insuranceIcon);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_find_services, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_find_services, container, false);
+        try{
+            loadIcons(rootView);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

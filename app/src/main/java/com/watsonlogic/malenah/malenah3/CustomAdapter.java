@@ -43,10 +43,11 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 .into(rowIcon);
 
         TextView rowName = (TextView)customRow.findViewById(R.id.rowName); //get reference to rowName
-        rowName.setText(item.getName());
+        String nameDesignation = item.getName()+", "+item.getDesignation();
+        rowName.setText(nameDesignation);
 
-        TextView rowDescription = (TextView)customRow.findViewById(R.id.rowDescription);
-        rowDescription.setText(item.getDescription());
+        TextView rowOrganization = (TextView)customRow.findViewById(R.id.rowOrganization);
+        rowOrganization.setText(item.getOrganization());
 
         TextView rowAddress = (TextView)customRow.findViewById(R.id.rowAddress);
         String address = item.getBuildingNumber()+" "+item.getStreetNumber()+" "+
