@@ -3,7 +3,6 @@ package com.watsonlogic.malenah.malenah3;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,10 +10,8 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -22,25 +19,25 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
     Context context;
     Map<String, String> postParams;
 
+    /**
+     * Overridden constructor
+     */
     public PostReviewAsyncTask(Context context, Map<String,String> postParams) {
-        Log.d("AsyncTask", "distance constructor");
         this.context = context;
         this.postParams = postParams;
     }
 
+    /**
+     * Default constructor
+     */
     public PostReviewAsyncTask() {
     }
 
-    @Override
-    protected Void doInBackground(Void... params) {
-        Log.d("POSTREVIEW","in doInbackground");
-
-
-        //set params
+    public byte[] generatePostData(){
         Map<String,String> dummyParams = new LinkedHashMap<>();
-        dummyParams.put("username", "watsokel1234567890");
+        dummyParams.put("username", "testUser");
         dummyParams.put("rating", "4.6");
-        dummyParams.put("comment", "Posting a comment from Android application");
+        dummyParams.put("comment", "New comment from Android application");
         dummyParams.put("provider", "5629499534213120");
         StringBuilder postData = new StringBuilder();
         for (Map.Entry<String, String> dParam : dummyParams.entrySet()) {
@@ -60,9 +57,17 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
         } catch (UnsupportedEncodingException e){
             e.printStackTrace();
         }
+        return postDataBytes;
+    }
 
-        //set headers
+    @Override
+    protected Void doInBackground(Void... params) {
+        Log.d("POSTREVIEW","in doInbackground");
 
+        /* Set params */
+        byte[] postDataBytes = generatePostData();
+
+        /* Set headers and write */
         URL url = null;
         HttpURLConnection conn = null;
         try {
@@ -78,6 +83,8 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
         } catch(IOException e){
             e.printStackTrace();
         }
+
+        /* Retrieve response */
         Reader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
