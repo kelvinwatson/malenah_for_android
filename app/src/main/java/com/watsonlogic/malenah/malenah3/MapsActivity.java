@@ -71,18 +71,19 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
 
     public void placeUserMarker() {
         if (location != null && userLatLng != null) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 14));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 14));
             userMarker = map.addMarker(new MarkerOptions()
                     .position(userLatLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     .title("You are here"));
-
+            updateMapCenter(userLatLng,userMarker);
         } else {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 14));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 14));
             userMarker = map.addMarker(new MarkerOptions()
                     .position(defaultLatLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     .title("You are here"));
+            updateMapCenter(defaultLatLng,userMarker);
         }
     }
 

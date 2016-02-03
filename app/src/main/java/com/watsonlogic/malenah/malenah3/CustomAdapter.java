@@ -42,7 +42,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 .into(rowIcon);
 
         TextView rowName = (TextView)customRow.findViewById(R.id.rowName); //get reference to rowName
-        String nameDesignation = item.getFirstName()+" "+item.getLastName()+","+item.getDesignation();
+        String nameDesignation = item.getFirstName()+" "+item.getLastName()+", "+item.getDesignation();
         rowName.setText(nameDesignation);
 
         TextView rowOrganization = (TextView)customRow.findViewById(R.id.rowOrganization);
@@ -54,7 +54,11 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         rowAddress.setText(address);
 
         TextView rowNotes = (TextView)customRow.findViewById(R.id.rowNotes);
-        rowNotes.setText(item.getNotes());
+        String ss=new String();
+        for (String s : item.getSpecialty()) {
+            ss+=s+", ";
+        }
+        rowNotes.setText(ss);
 
         TextView distance = (TextView)customRow.findViewById(R.id.distance);
         distance.setText(item.getDistance()+"mi");
