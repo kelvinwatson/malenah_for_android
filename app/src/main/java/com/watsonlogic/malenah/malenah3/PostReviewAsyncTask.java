@@ -35,7 +35,7 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
 
     public byte[] generatePostData(){
         Map<String,String> dummyParams = new LinkedHashMap<>();
-        dummyParams.put("username", "testUser");
+        dummyParams.put("username", "testUser2");
         dummyParams.put("rating", "4.6");
         dummyParams.put("comment", "New comment from Android application");
         dummyParams.put("provider", "5629499534213120");

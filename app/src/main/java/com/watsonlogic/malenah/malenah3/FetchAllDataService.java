@@ -36,8 +36,8 @@ public class FetchAllDataService extends Service {
                     //http://developer.android.com/reference/java/net/HttpURLConnection.html
                     //http://stackoverflow.com/questions/8376072/whats-the-readstream-method-i-just-can-not-find-it-anywhere
                     try {
-                        url = new URL("http://malenah-api.appspot.com/provider");
-                        Log.d("FETCH","calling http://malenah-api.appspot.com/provider");
+                        url = new URL("http://malenah-api-prod.appspot.com/provider");
+                        Log.d("FETCH","calling http://malenah-api-prod.appspot.com/provider");
                         urlConnection = (HttpURLConnection)url.openConnection();
                     } catch (IOException e) {
                         e.printStackTrace();

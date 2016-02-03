@@ -116,7 +116,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     public void launchDrawerActivity(View v) {
-        startActivity(new Intent(this, DrawerActivity.class));
+        Intent i = new Intent(MainActivity.this, DrawerActivity.class);
+        i.putExtra("allProviders",providers);
+        Log.d("DRAWER", "sending providers from Main to Drawer");
+        startActivity(i);
     }
 
 

@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,16 +42,15 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 .into(rowIcon);
 
         TextView rowName = (TextView)customRow.findViewById(R.id.rowName); //get reference to rowName
-        String nameDesignation = item.getName()+", "+item.getDesignation();
+        String nameDesignation = item.getFirstName()+" "+item.getLastName()+","+item.getDesignation();
         rowName.setText(nameDesignation);
 
         TextView rowOrganization = (TextView)customRow.findViewById(R.id.rowOrganization);
         rowOrganization.setText(item.getOrganization());
 
         TextView rowAddress = (TextView)customRow.findViewById(R.id.rowAddress);
-        String address = item.getBuildingNumber()+" "+item.getStreetNumber()+" "+
-                item.getStreetName()+", "+item.getCity()+" "+item.getCountry()+" "+
-                item.getPostalCode();
+        String address = item.getBuildingNumber()+" "+item.getStreet()+", "+
+                item.getCity()+" "+item.getCountry()+" "+item.getPostalCode();
         rowAddress.setText(address);
 
         TextView rowNotes = (TextView)customRow.findViewById(R.id.rowNotes);
@@ -63,10 +61,10 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
 
         ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
         if(item.isFavourited()) {
-            Log.d("CUSTOMADAPTER",item.getName()+" favorited");
+            Log.d("CUSTOMADAPTER",item.getFirstName()+" favorited");
             favoriteToggle.setChecked(true);
         } else {
-            Log.d("CUSTOMADAPTER",item.getName()+" NOT favorited");
+            Log.d("CUSTOMADAPTER",item.getLastName()+" NOT favorited");
             favoriteToggle.setChecked(false);
         }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

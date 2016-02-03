@@ -93,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
                 ri.setMapMarker(map.addMarker(new MarkerOptions()
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         .position(new LatLng(ri.getLatitude(), ri.getLongitude()))
-                        .title(ri.getName())));
+                        .title(ri.getFirstName()+ " "+ri.getLastName())));
             }
     }
 
@@ -131,7 +131,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
                     Log.d("MapsActivity", "location=" + location);
                 }
                 for (int i = 0; i < rowItems.size(); i++) {
-                    Log.d("MapsActivity", "name=" + rowItems.get(i).getName());
+                    Log.d("MapsActivity", "name=" + rowItems.get(i).getFirstName()+rowItems.get(i).getLastName());
                     Log.d("MapsActivity", "isFave=" + rowItems.get(i).isFavourited());
                 }
             } catch (Exception e) {

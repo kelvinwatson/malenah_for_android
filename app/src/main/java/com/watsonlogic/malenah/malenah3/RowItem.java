@@ -5,17 +5,21 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.Marker;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+
 public class RowItem implements Parcelable{
     private String category;
     private int id;
     private String iconURL;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String designation;
-    private String specialty;
+    private ArrayList<String> specialty;
     private String organization;
-    private int buildingNumber = -1;
-    private int streetNumber;
-    private String streetName;
+    private String buildingNumber;
+    private String street;
     private String city;
     private String state;
     private String country;
@@ -28,20 +32,20 @@ public class RowItem implements Parcelable{
     private Marker mapMarker;
 
     public RowItem(String category, int id, String iconURL,
-                   String name, String designation, String specialty, String organization,
-                   int buildingNumber, int streetNumber, String streetName,
+                   String firstName, String lastName, String designation, ArrayList<String> specialty, String organization,
+                   String buildingNumber, String street,
                    String city, String state, String country, String postalCode,
                    String notes, double latitude, double longitude, double distance, boolean favourited){
         this.category=category;
         this.id=id;
         this.iconURL=iconURL;
-        this.name=name;
+        this.firstName=firstName;
+        this.lastName=lastName;
         this.designation=designation;
         this.specialty=specialty;
         this.organization=organization;
         this.buildingNumber=buildingNumber;
-        this.streetNumber=streetNumber;
-        this.streetName=streetName;
+        this.street=street;
         this.city=city;
         this.state=state;
         this.country=country;
@@ -58,13 +62,13 @@ public class RowItem implements Parcelable{
         category = in.readString();
         id = in.readInt();
         iconURL = in.readString();
-        name = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
         designation = in.readString();
-        specialty = in.readString();
+        specialty = (ArrayList<String>) in.readSerializable();;
         organization = in.readString();
-        buildingNumber = in.readInt();
-        streetNumber = in.readInt();
-        streetName = in.readString();
+        buildingNumber = in.readString();
+        street = in.readString();
         city = in.readString();
         state = in.readString();
         country = in.readString();
@@ -98,13 +102,13 @@ public class RowItem implements Parcelable{
         dest.writeString(category);
         dest.writeInt(id);
         dest.writeString(iconURL);
-        dest.writeString(name);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
         dest.writeString(designation);
-        dest.writeString(specialty);
+        dest.writeSerializable(specialty);
         dest.writeString(organization);
-        dest.writeInt(buildingNumber);
-        dest.writeInt(streetNumber);
-        dest.writeString(streetName);
+        dest.writeString(buildingNumber);
+        dest.writeString(street);
         dest.writeString(city);
         dest.writeString(state);
         dest.writeString(country);
@@ -140,12 +144,20 @@ public class RowItem implements Parcelable{
         this.iconURL = iconURL;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getDesignation() {
@@ -156,11 +168,11 @@ public class RowItem implements Parcelable{
         this.designation = designation;
     }
 
-    public String getSpecialty() {
+    public ArrayList<String> getSpecialty() {
         return specialty;
     }
 
-    public void setSpecialty(String specialty) {
+    public void setSpecialty(ArrayList<String> specialty) {
         this.specialty = specialty;
     }
 
@@ -172,28 +184,21 @@ public class RowItem implements Parcelable{
         this.organization = organization;
     }
 
-    public int getBuildingNumber() {
+    public String getBuildingNumber() {
         return buildingNumber;
     }
 
-    public void setBuildingNumber(int buildingNumber) {
+    public void setBuildingNumber(String buildingNumber) {
         this.buildingNumber = buildingNumber;
     }
 
-    public int getStreetNumber() {
-        return streetNumber;
+
+    public String getStreet() {
+        return street;
     }
 
-    public void setStreetNumber(int streetNumber) {
-        this.streetNumber = streetNumber;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
+    public void setStreet(String streetName) {
+        this.street = streetName;
     }
 
     public String getCity() {

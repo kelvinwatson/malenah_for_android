@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -23,10 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
-import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,7 +40,10 @@ public class DrawerActivity extends AppCompatActivity
                     android.location.LocationListener  {
 
     private ArrayList<RowItem> items = new ArrayList<RowItem>();
+    public ArrayList<RowItem> physicians = new ArrayList<RowItem>();
+    public ArrayList<RowItem> nurses = new ArrayList<RowItem>();
     private User user = new User();
+    public String allProvidersStr = new String();
     private LocationManager locationManager;
     private Location location = null;
     private Context context;
@@ -74,15 +74,15 @@ public class DrawerActivity extends AppCompatActivity
         user.setLastName("Watson");
         user.setFavorites(null);
 
-        RowItem r0 = new RowItem("physicians",
+        /*RowItem r0 = new RowItem("physicians",
                 0,
                 "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
-                "Amir Nassim",
+                "Amir",
+                "Nassim",
                 "MD",
                 "Neurosurgery",
                 "AN and Associates!",
-                12,
-                3456,
+                "12",
                 "ABC Street",
                 "Portland",
                 "OR",
@@ -96,7 +96,8 @@ public class DrawerActivity extends AppCompatActivity
         RowItem r1 = new RowItem("physicians",
                 1,
                 "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
-                "Olivia Benson",
+                "Olivia",
+                "Benson",
                 "MD",
                 "Family Practice",
                 "Benson Inc.",
@@ -115,7 +116,8 @@ public class DrawerActivity extends AppCompatActivity
         RowItem r2 = new RowItem("physicians",
                 2,
                 "http://www.constantinebrown.com/wp-content/uploads/2013/11/photo_21418_20120211.jpg",
-                "William Bose",
+                "William",
+                "Bose",
                 "MD",
                 "Pediatrician",
                 "Bose Health!",
@@ -130,22 +132,28 @@ public class DrawerActivity extends AppCompatActivity
                 45.517539,
                 -122.679578,
                 9.2,
-                true);
+                true);*/
         /* Send the data to MapsActivity */
         //TODO: May need to empty out the items arraylist as it seems to append data without
         //regard to whether the item already exists in the arraylist
-        if(!items.isEmpty()){
+        /*if(!items.isEmpty()){
             items.clear(); //unsure if this is needed when finally using real data
         }
-        items.add(r0); items.add(r1); items.add(r2);
+        items.add(r0); items.add(r1); items.add(r2);*/
         mapsIntent.putExtra("user", (Serializable) user);
-        mapsIntent.putExtra("items", items);
-        mapsIntent.putExtra("location", location);
-        Log.d("DrawerActivity", "items=" + items.toString());
-        for(int i=0; i<items.size(); i++){
-            Log.d("DrawerActivity", "name=" + items.get(i).getName());
-            Log.d("DrawerActivity", "isFave=" + items.get(i).isFavourited());
+        if(v.getId()==R.id.physicians) {
+            mapsIntent.putExtra("items", physicians);
+        } else if(v.getId()==R.id.nurses){
+            mapsIntent.putExtra("items",nurses);
         }
+        mapsIntent.putExtra("location", location);
+        Log.d("DRAWER", "items=" + physicians.toString());
+        Log.d("DRAWER", "items=" + nurses.toString());
+        /*for(int i=0; i<items.size(); i++){
+            Log.d("DrawerActivity", "fName=" + items.get(i).getFirstName());
+            Log.d("DrawerActivity", "lName=" + items.get(i).getLastName());
+            Log.d("DrawerActivity", "isFave=" + items.get(i).isFavourited());
+        }*/
         startActivity(mapsIntent);
     }
 
@@ -163,14 +171,77 @@ public class DrawerActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        //load icons
-
         //TODO: Retrieve location
         getLocation();
 
+        getDataFromMain();
     }
 
 
+
+
+
+
+
+    protected void getDataFromMain(){
+        /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
+        final Bundle b = getIntent().getExtras(); //retrieve data on first onStart only
+        if(b!=null){
+            allProvidersStr=(String)b.getString("allProviders");
+            Log.d("DRAWER,GOTS",allProvidersStr);
+            JSONArray allProvidersJSONArr = null;
+            try{
+                allProvidersJSONArr = new JSONArray(allProvidersStr);
+                Log.d("DRAWER,allProJSONArr=",allProvidersJSONArr.toString());
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+            System.out.println("DRAWER,allProJSONArrLen"+allProvidersJSONArr.length());
+            for(int i=0,len=allProvidersJSONArr.length(); i<len; i++){
+                JSONObject obj = null;
+                try{
+                    obj = allProvidersJSONArr.getJSONObject(i);
+                    JSONArray spA = obj.getJSONArray("specializations");
+                    ArrayList<String> spL = new ArrayList<String>();
+                    for(int k=0,le=spA.length();k<le;k++){
+                       spL.add(((JSONObject)spA.get(k)).getString("name"));
+                    }
+                    RowItem ri = new RowItem(
+                        obj.getString("category"),
+                        obj.getInt("key"),
+                        obj.getString("icon_url"),
+                        obj.getString("first_name"),
+                        obj.getString("last_name"),
+                        obj.getString("designation"),
+                        spL,
+                        obj.getString("organization"),
+                        obj.getString("building"),
+                        obj.getString("street"),
+                        obj.getString("city"),
+                        obj.getString("state"),
+                        obj.getString("country"),
+                        obj.getString("zipcode"),
+                        obj.getString("notes"),
+                        obj.getDouble("latitude"),
+                        obj.getDouble("longitude"),
+                        1000.00,
+                        false
+                    );
+                    if(obj.getString("category").equals("Physician")){
+                        physicians.add(ri);
+                    } else if(obj.getString("category").equals("Nurse Practitioner") || obj.getString("category").equals("Nurse")){
+                        nurses.add(ri);
+                    }
+                } catch(JSONException e){
+                    e.printStackTrace();
+                }
+
+            }
+        } else{
+            return;
+        }
+
+    }
 
 
     protected void locationDone(Location location) {
@@ -240,20 +311,7 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
-        /*TODO: Parse user data to user object and save */
-        final Bundle bundle = getIntent().getExtras(); //retrieve data on first onStart only
-        if(bundle != null) {
-            String allDataStr = bundle.getString("allData");
-            try {
-                JSONObject allDataJSON = new JSONObject(allDataStr);
-                //items = parseData(allDataJSON, "data");
-                //user = parseUser(allDataJSON, "user");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        else return; //bundle null , e.g. for subsequent onStarts(), no data is recv'd
+
     }
 
     @Override
@@ -265,13 +323,14 @@ public class DrawerActivity extends AppCompatActivity
         Fragment f = null;
 
         /*Test items*/
-        RowItem r0 = new RowItem("physicians",
+        /*RowItem r0 = new RowItem("physicians",
                 0,
                 "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
-                "Amir Nassim and Associates",
+                "Amir",
+                "Nassim",
                 "MD",
                 "Neurosurgery",
-                "good with brains!",
+                "Some Organization",
                 12,
                 3456,
                 "ABC Street",
@@ -287,10 +346,11 @@ public class DrawerActivity extends AppCompatActivity
         RowItem r1 = new RowItem("physicians",
                 1,
                 "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
-                "Olivia Benson",
+                "Olivia",
+                "Benson",
                 "MD",
                 "Family Practice",
-                "Celebrating 10 years in practice!",
+                "An Organization!",
                 33,
                 8913,
                 "DEF Boulevard",
@@ -306,10 +366,11 @@ public class DrawerActivity extends AppCompatActivity
         RowItem r2 = new RowItem("physicians",
                 2,
                 "http://www.constantinebrown.com/wp-content/uploads/2013/11/photo_21418_20120211.jpg",
-                "William Bose",
+                "William",
+                "Bose",
                 "MD",
                 "Pediatrician",
-                "Reliable and caring!",
+                "Reliable Inc!",
                 111,
                 2222,
                 "GHIJ Ave",
@@ -321,16 +382,16 @@ public class DrawerActivity extends AppCompatActivity
                 45.6,
                 -122.7,
                 9.2,
-                true);
+                true);*/
         switch(position){
             case 0: {
                 mTitle = "Find Services";
                 Bundle bundle = new Bundle();
                 //TEST: passing in arraylist of data to maps fragment
-                ArrayList<RowItem> testList = new ArrayList<RowItem>();
+                /*ArrayList<RowItem> testList = new ArrayList<RowItem>();
                 testList.add(r0);
                 testList.add(r1);
-                testList.add(r2);
+                testList.add(r2);*/
                 //bundle.putParcelableArrayList("testArrayList",testList);
                 f = FindServicesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
@@ -340,10 +401,10 @@ public class DrawerActivity extends AppCompatActivity
                 Bundle bundle = new Bundle();
                 //(WORKS) TEST: bundle.putString("somePrettyKey", "someBeautifulValue");
                 //(WORKS) TEST: Passing in array list to favorites fragment
-                ArrayList<RowItem> testList = new ArrayList<RowItem>();
+                /*ArrayList<RowItem> testList = new ArrayList<RowItem>();
                 testList.add(r0);
                 testList.add(r1);
-                bundle.putParcelableArrayList("testArrayList", testList);
+                bundle.putParcelableArrayList("testArrayList", testList);*/
                 f = MyFavoritesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
                 break;
