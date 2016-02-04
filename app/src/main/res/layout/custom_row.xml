@@ -10,7 +10,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="132dp">
 
         <ImageView
             android:id="@+id/rowIcon"
@@ -82,12 +82,14 @@
             android:layout_column="3"
             android:gravity="right"
             android:minWidth="140dp"
-            android:layout_weight="20">
+            android:layout_weight="20"
+            android:weightSum="3">
 
             <TextView
                 android:id="@+id/distance"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:text="0.9mi"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="#006699"
@@ -98,13 +100,24 @@
 
             <ToggleButton android:id="@+id/favoriteToggle"
                 android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:textOn=""
                 android:textOff=""
                 android:background="@drawable/toggle"
                 android:checked="false"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="5dp" />
+
+            <ImageButton
+                android:layout_width="40dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/writeReviewIcon"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/review_write"
+                android:scaleType="fitCenter" />
         </LinearLayout>
     </LinearLayout>
 

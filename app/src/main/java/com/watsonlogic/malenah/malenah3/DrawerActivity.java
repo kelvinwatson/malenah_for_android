@@ -34,10 +34,10 @@ import java.util.ArrayList;
 
 public class DrawerActivity extends AppCompatActivity
         implements  MyFavoritesFragment.OnFragmentInteractionListener,
-                    FindServicesFragment.OnFragmentInteractionListener,
-                    LogoutFragment.OnFragmentInteractionListener,
-                    NavigationDrawerFragment.NavigationDrawerCallbacks,
-                    android.location.LocationListener  {
+        FindServicesFragment.OnFragmentInteractionListener,
+        LogoutFragment.OnFragmentInteractionListener,
+        NavigationDrawerFragment.NavigationDrawerCallbacks,
+        android.location.LocationListener  {
 
     private ArrayList<RowItem> items = new ArrayList<RowItem>();
     public ArrayList<RowItem> physicians = new ArrayList<RowItem>();
@@ -171,7 +171,6 @@ public class DrawerActivity extends AppCompatActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        //TODO: Retrieve location
         getLocation();
 
         getDataFromMain();
@@ -204,28 +203,28 @@ public class DrawerActivity extends AppCompatActivity
                     JSONArray spA = obj.getJSONArray("specializations");
                     ArrayList<String> spL = new ArrayList<String>();
                     for(int k=0,le=spA.length();k<le;k++){
-                       spL.add(((JSONObject)spA.get(k)).getString("name"));
+                        spL.add(((JSONObject)spA.get(k)).getString("name"));
                     }
                     RowItem ri = new RowItem(
-                        obj.getString("category"),
-                        obj.getInt("key"),
-                        obj.getString("icon_url"),
-                        obj.getString("first_name"),
-                        obj.getString("last_name"),
-                        obj.getString("designation"),
-                        spL,
-                        obj.getString("organization"),
-                        obj.getString("building"),
-                        obj.getString("street"),
-                        obj.getString("city"),
-                        obj.getString("state"),
-                        obj.getString("country"),
-                        obj.getString("zipcode"),
-                        obj.getString("notes"),
-                        obj.getDouble("latitude"),
-                        obj.getDouble("longitude"),
-                        1000.00,
-                        false
+                            obj.getString("category"),
+                            obj.getLong("key"),
+                            obj.getString("icon_url"),
+                            obj.getString("first_name"),
+                            obj.getString("last_name"),
+                            obj.getString("designation"),
+                            spL,
+                            obj.getString("organization"),
+                            obj.getString("building"),
+                            obj.getString("street"),
+                            obj.getString("city"),
+                            obj.getString("state"),
+                            obj.getString("country"),
+                            obj.getString("zipcode"),
+                            obj.getString("notes"),
+                            obj.getDouble("latitude"),
+                            obj.getDouble("longitude"),
+                            0.0,
+                            false
                     );
                     if(obj.getString("category").equals("Physician")){
                         physicians.add(ri);

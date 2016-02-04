@@ -2,16 +2,12 @@ package com.watsonlogic.malenah.malenah3;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
 import com.google.android.gms.maps.model.Marker;
-
-import org.json.JSONArray;
-
 import java.util.ArrayList;
 
 public class RowItem implements Parcelable{
     private String category;
-    private int id;
+    private long id;
     private String iconURL;
     private String firstName;
     private String lastName;
@@ -31,10 +27,9 @@ public class RowItem implements Parcelable{
     private boolean favourited;
     private Marker mapMarker;
 
-    public RowItem(String category, int id, String iconURL,
+    public RowItem(String category, long id, String iconURL,
                    String firstName, String lastName, String designation, ArrayList<String> specialty, String organization,
-                   String buildingNumber, String street,
-                   String city, String state, String country, String postalCode,
+                   String buildingNumber, String street, String city, String state, String country, String postalCode,
                    String notes, double latitude, double longitude, double distance, boolean favourited){
         this.category=category;
         this.id=id;
@@ -60,12 +55,12 @@ public class RowItem implements Parcelable{
 
     protected RowItem(Parcel in) {
         category = in.readString();
-        id = in.readInt();
+        id = in.readLong();
         iconURL = in.readString();
         firstName = in.readString();
         lastName = in.readString();
         designation = in.readString();
-        specialty = (ArrayList<String>) in.readSerializable();;
+        specialty = (ArrayList<String>) in.readSerializable();
         organization = in.readString();
         buildingNumber = in.readString();
         street = in.readString();
@@ -100,7 +95,7 @@ public class RowItem implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(category);
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeString(iconURL);
         dest.writeString(firstName);
         dest.writeString(lastName);
@@ -128,11 +123,11 @@ public class RowItem implements Parcelable{
         this.category = category;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

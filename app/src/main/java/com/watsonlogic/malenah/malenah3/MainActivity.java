@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView(R.layout.activity_main);
         startButton = (Button)findViewById(R.id.startButton); //get reference to button
         loadIcon();
-     }
+    }
 
     public void loadIcon(){
         ImageView titleIcon = (ImageView)findViewById(R.id.titleIcon); //get reference to rowIcon
@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             return false;
         }
         if  ((Build.VERSION.SDK_INT >= 23) &&
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
-            (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+                (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
+                (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             return false;
         }
         //Source: http://stackoverflow.com/questions/15997079/getlastknownlocation-always-return-null-after-i-re-install-the-apk-file-via-ecli

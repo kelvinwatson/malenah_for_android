@@ -49,7 +49,8 @@
                 android:minHeight="100dp"
                 android:minWidth="100dp"
                 android:scaleType="fitCenter"
-                android:contentDescription="nurse icon" />
+                android:contentDescription="nurse icon"
+                android:onClick="launchMapsActivity" />
 
         </LinearLayout>
 
@@ -68,7 +69,7 @@
             <TextView
                 android:id="@+id/physicians_text"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -77,27 +78,29 @@
                 android:background="#000"
                 android:minHeight="100dp"
                 android:minWidth="100dp"
-                android:text="Physicians"
+                android:text="@string/ph"
                 android:textColor="#fff"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/nurses_text"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.50"
                 android:background="#000"
                 android:minHeight="100dp"
                 android:minWidth="100dp"
-                android:text="Nurse Practitioners"
+                android:text="@string/np"
                 android:textColor="#fff"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:fontFamily="sans-serif-light"
+                android:textSize="16sp" />
 
         </LinearLayout>
 
@@ -156,7 +159,7 @@
             <TextView
                 android:id="@+id/counselor_text"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -168,12 +171,13 @@
                 android:text="Counseling"
                 android:textColor="#fff"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/labs_text"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -185,7 +189,8 @@
                 android:text="Lab Services"
                 android:textColor="#fff"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-light" />
 
         </LinearLayout>
 
@@ -243,7 +248,7 @@
             <TextView
                 android:id="@+id/chiropractors_text"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="21dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -255,12 +260,14 @@
                 android:text="Chiropractors"
                 android:textColor="#fff"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:enabled="false"
+                android:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/insurance_text"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="21dp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -272,7 +279,8 @@
                 android:text="Insurance"
                 android:textColor="#fff"
                 android:gravity="center"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:fontFamily="sans-serif-light" />
 
         </LinearLayout>
     </LinearLayout>

@@ -9,8 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -40,6 +42,15 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 .fit()
                 .centerInside()
                 .into(rowIcon);
+
+        ImageButton writeReviewIcon = (ImageButton)customRow.findViewById(R.id.writeReviewIcon);
+        writeReviewIcon.setTag(item.getId()); //for passing list item index
+        writeReviewIcon.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Toast.makeText(context,"clicked"+v.getTag()+"item="+item.getFirstName(),Toast.LENGTH_SHORT).show();
+            }
+        });
 
         TextView rowName = (TextView)customRow.findViewById(R.id.rowName); //get reference to rowName
         String nameDesignation = item.getFirstName()+" "+item.getLastName()+", "+item.getDesignation();

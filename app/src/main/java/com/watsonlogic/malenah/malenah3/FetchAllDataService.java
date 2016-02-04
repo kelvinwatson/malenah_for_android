@@ -55,7 +55,7 @@ public class FetchAllDataService extends Service {
                         //int status = urlConnection.getResponseCode();
                         //InputStream error = urlConnection.getErrorStream();
                     } finally {
-                            urlConnection.disconnect();
+                        urlConnection.disconnect();
                     }
                 }
             };
