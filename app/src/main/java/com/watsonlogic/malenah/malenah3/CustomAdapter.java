@@ -62,8 +62,12 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         rowOrganization.setText(item.getOrganization());
 
         TextView rowAddress = (TextView)customRow.findViewById(R.id.rowAddress);
-        String address = item.getBuildingNumber()+" "+item.getStreet()+", "+
-                item.getCity()+" "+item.getCountry()+" "+item.getPostalCode();
+
+        String address = new String();
+        if(!item.getBuildingNumber().equals("")){
+            address += item.getBuildingNumber()+"-";
+        }
+        address+=item.getStreet()+", "+item.getCity()+" "+item.getCountry()+" "+item.getPostalCode();
         rowAddress.setText(address);
 
         TextView rowNotes = (TextView)customRow.findViewById(R.id.rowNotes);
