@@ -177,11 +177,6 @@ public class DrawerActivity extends AppCompatActivity
     }
 
 
-
-
-
-
-
     protected void getDataFromMain(){
         /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
         final Bundle b = getIntent().getExtras(); //retrieve data on first onStart only

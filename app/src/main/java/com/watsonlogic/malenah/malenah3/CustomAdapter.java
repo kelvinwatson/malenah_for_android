@@ -12,7 +12,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -48,7 +47,10 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         writeReviewIcon.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                Toast.makeText(context,"clicked"+v.getTag()+"item="+item.getFirstName(),Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"clicked"+v.getTag()+"item="+item.getFirstName(),Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(context, ProfileActivity.class);
+                i.putExtra("profileItem",item);
+                context.startActivity(i);
             }
         });
 

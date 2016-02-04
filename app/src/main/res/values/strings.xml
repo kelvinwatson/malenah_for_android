@@ -15,9 +15,10 @@
 
     <string name="hello_world">Hello world!</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <string name="np">Nurse Practitioners</string>
     <string name="ph">Physicians</string>
+    <string name="title_activity_profile">Profile</string>
 </resources>
