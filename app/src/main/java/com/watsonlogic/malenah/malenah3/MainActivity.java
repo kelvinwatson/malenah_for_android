@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         startService(fetchIntent);
     }
 
-    /*TODO: Broadcast receiver class to receive the data broadcasted from FetchAllDataService */
     public class DataReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {

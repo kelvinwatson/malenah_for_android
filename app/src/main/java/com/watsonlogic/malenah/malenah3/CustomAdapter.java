@@ -48,6 +48,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
             @Override
             public void onClick(View v){
                 //Toast.makeText(context,"clicked"+v.getTag()+"item="+item.getFirstName(),Toast.LENGTH_SHORT).show();
+
                 Intent i = new Intent(context, ProfileActivity.class);
                 i.putExtra("profileItem",item);
                 context.startActivity(i);

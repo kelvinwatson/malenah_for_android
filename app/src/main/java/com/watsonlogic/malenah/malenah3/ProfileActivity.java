@@ -12,9 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class ProfileActivity extends AppCompatActivity {
+    //private String reviews;
     private RowItem profile;
     private Context context;
+    private JSONArray reviews = new JSONArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +33,35 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         this.context = getApplicationContext();
+        //Intent i = getIntent();
+        //reviews = i.getStringExtra("Reviews");
         getDataFromMapActivity();
         setHeaderData();
+        fetchReviews();
+    }
+
+    public void fetchReviews(){
+        //new FetchReviewsAsyncTask(ProfileActivity.this, profile.getId()).execute();
+        Log.d("FETCHREV", "executing async task with item.getId()" + profile.getId());
+        FetchReviewsAsyncTask asyncTask = new FetchReviewsAsyncTask(ProfileActivity.this,profile.getId());
+        try {
+            asyncTask.execute(); //set asynchronously
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void fetchReviewsDone(JSONArray reviews){
+        this.reviews = reviews;
+        Log.d("FETCHREV", "Back in Profile");
+        Log.d("FETCHREV", reviews.toString());
         setCommentArea();
     }
 
     protected void setCommentArea(){
 
     }
+
 
     protected void getDataFromMapActivity(){
         Intent i = getIntent();
@@ -79,4 +105,6 @@ public class ProfileActivity extends AppCompatActivity {
         specializations.setText(sb.toString());
 
     }
+
+
 }

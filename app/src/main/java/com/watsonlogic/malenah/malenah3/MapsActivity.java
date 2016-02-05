@@ -167,4 +167,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         this.rowItems = rowItems;
         ((ArrayAdapter) adapter).notifyDataSetChanged();
     }
+
+
 }
