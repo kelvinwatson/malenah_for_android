@@ -82,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 TextView review = new TextView(this);
-                //review.setBackgroundResource(R.drawable.pink_border);
+                review.setBackgroundResource(R.drawable.pink_border);
                 review.setTextColor(Color.parseColor("#FFFFFF"));
                 review.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 review.setText(uName + '\n' + rating + '\n' + comment + '\n');
