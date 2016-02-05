@@ -2,24 +2,27 @@ package com.watsonlogic.malenah.malenah3;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
-    //private String reviews;
     private RowItem profile;
     private Context context;
     private JSONArray reviews = new JSONArray();
+    private LinearLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         this.context = getApplicationContext();
-        //Intent i = getIntent();
-        //reviews = i.getStringExtra("Reviews");
+        linearLayout = (LinearLayout)findViewById(R.id.reviewsList);
         getDataFromMapActivity();
         setHeaderData();
         fetchReviews();
@@ -54,12 +56,47 @@ public class ProfileActivity extends AppCompatActivity {
     public void fetchReviewsDone(JSONArray reviews){
         this.reviews = reviews;
         Log.d("FETCHREV", "Back in Profile");
-        Log.d("FETCHREV", reviews.toString());
-        setCommentArea();
+        Log.d("FETCHREV", reviews.toString()); //empty array if no reviews for provider
+        boolean hasReviews = reviews.length()>0? true : false;
+        try{
+            setCommentArea(hasReviews);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
     }
 
-    protected void setCommentArea(){
-
+    protected void setCommentArea(boolean hasReview) throws JSONException {
+        if(hasReview){
+            Log.d("PROFILE","Has Reviews!");
+            for(int i=0, len=reviews.length(); i<len; i++){
+                JSONObject ele = null;
+                String uName = null;
+                String comment = null;
+                double rating = -1;
+                try{
+                    ele = reviews.getJSONObject(i);
+                    uName = ele.getString("username");
+                    rating = ele.getDouble("rating");
+                    comment = ele.getString("comment");
+                } catch(JSONException e){
+                    e.printStackTrace();
+                }
+                TextView review = new TextView(this);
+                //review.setBackgroundResource(R.drawable.pink_border);
+                review.setTextColor(Color.parseColor("#FFFFFF"));
+                review.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                review.setText(uName + '\n' + rating + '\n' + comment + '\n');
+                linearLayout.addView(review);
+            }
+        }else{
+            Log.d("PROFILE", "No Reviews!");
+            TextView noReviews = new TextView(this);
+            noReviews.setTextColor(Color.parseColor("#FFFFFF"));
+            noReviews.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
+            noReviews.setGravity(Gravity.CENTER);
+            noReviews.setText("No Reviews Yet");
+            linearLayout.addView(noReviews);
+        }
     }
 
 
