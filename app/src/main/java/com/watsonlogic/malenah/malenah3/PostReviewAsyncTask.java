@@ -24,7 +24,7 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
      */
     public PostReviewAsyncTask(Context context, Map<String,String> postParams) {
         this.context = context;
-        this.postParams = postParams;
+        this.postParams = new LinkedHashMap<String,String>(postParams);
     }
 
     /**
@@ -34,13 +34,15 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
     }
 
     public byte[] generatePostData(){
-        Map<String,String> dummyParams = new LinkedHashMap<>();
-        dummyParams.put("username", "testUser2");
-        dummyParams.put("rating", "4.6");
-        dummyParams.put("comment", "New comment from Android application");
-        dummyParams.put("provider", "5629499534213120");
+        //Map<String,String> dummyParams = new LinkedHashMap<>();
+        //dummyParams.put("username", "testUser2");
+        //dummyParams.put("rating", "4.6");
+        //dummyParams.put("comment", "New comment from Android application");
+        //dummyParams.put("provider", "5629499534213120");
+        Log.d("POSTREVIEW","in generatePostData()");
+        Log.d("POSTREVIEW",postParams.toString());
         StringBuilder postData = new StringBuilder();
-        for (Map.Entry<String, String> dParam : dummyParams.entrySet()) {
+        for (Map.Entry<String, String> dParam : postParams.entrySet()) {
             if (postData.length() != 0) postData.append('&');
             try {
                 postData.append(URLEncoder.encode(dParam.getKey(), "UTF-8"));
@@ -71,7 +73,7 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
         URL url = null;
         HttpURLConnection conn = null;
         try {
-            url = new URL("http://malenah-api.appspot.com/review");
+            url = new URL("http://malenah-api-prod.appspot.com/review");
             conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

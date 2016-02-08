@@ -104,7 +104,7 @@
             android:layout_width="0dp"
             android:layout_weight="0.75"
             android:layout_height="wrap_content"
-            android:id="@+id/commentInput"
+            android:id="@+id/commentEditText"
             android:hint="Add a comment"
             android:background="#006699"
             android:ems="10"
@@ -117,7 +117,7 @@
             android:layout_weight="0.25"
             android:layout_height="wrap_content"
             android:text="Submit"
-            android:id="@+id/button"
+            android:id="@+id/submitCommentBtn"
             android:fontFamily="sans-serif-light" />
     </LinearLayout>
 

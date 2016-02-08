@@ -78,9 +78,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             }
         }
         //practice a post here?
-        Log.d("POSTREVIEW","execute async task from MainActivity()");
-        new PostReviewAsyncTask().execute();
-
+        //Log.d("POSTREVIEW","execute async task from MainActivity()");
+        //new PostReviewAsyncTask().execute();
     }
 
     protected void getData() {

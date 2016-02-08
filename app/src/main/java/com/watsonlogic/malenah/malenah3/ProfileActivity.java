@@ -3,26 +3,35 @@ package com.watsonlogic.malenah.malenah3;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-
+import android.view.inputmethod.InputMethodManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
     private RowItem profile;
     private Context context;
     private JSONArray reviews = new JSONArray();
     private LinearLayout linearLayout;
+    Button submitCommentBtn;
+    EditText commentEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +39,26 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.context = getApplicationContext();
+        submitCommentBtn=(Button)findViewById(R.id.submitCommentBtn);
+        commentEditText=(EditText)findViewById(R.id.commentEditText);
+        submitCommentBtn.setOnClickListener(
+            new View.OnClickListener() {
+                public void onClick(View view) {
+                    Log.v("EditText", commentEditText.getText().toString());
+                    //POST THIS COMMENT
+                    Map<String,String> postParams = new LinkedHashMap<>();
+                    postParams.put("username", "androidUser");
+                    postParams.put("rating", "4.0");
+                    postParams.put("comment", commentEditText.getText().toString());
+                    postParams.put("provider", String.valueOf(profile.getId()));
+                    Log.d("POSTREVIEW","execute async task from ProfileActivity()");
+                    new PostReviewAsyncTask(context, postParams).execute();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                    commentEditText.setText("");
+                }
+            });
     }
 
     @Override
@@ -84,6 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
                 TextView review = new TextView(this);
                 review.setBackgroundResource(R.drawable.pink_border);
                 review.setTextColor(Color.parseColor("#FFFFFF"));
+                review.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
                 review.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                 review.setText(uName + '\n' + rating + '\n' + comment + '\n');
                 linearLayout.addView(review);
@@ -92,6 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
             Log.d("PROFILE", "No Reviews!");
             TextView noReviews = new TextView(this);
             noReviews.setTextColor(Color.parseColor("#FFFFFF"));
+            noReviews.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
             noReviews.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
             noReviews.setGravity(Gravity.CENTER);
             noReviews.setText("No Reviews Yet");
