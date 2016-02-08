@@ -3,6 +3,8 @@ package com.watsonlogic.malenah.malenah3;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -15,7 +17,7 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
+public class PostReviewAsyncTask extends AsyncTask<Void,Void,String> {
     Context context;
     Map<String, String> postParams;
 
@@ -63,7 +65,7 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected String doInBackground(Void... params) {
         Log.d("POSTREVIEW","in doInbackground");
 
         /* Set params */
@@ -88,9 +90,10 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
 
         /* Retrieve response */
         Reader in = null;
+        String response = new String();
         try {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-            String response = "";
+            response = "";
             for (int c = in.read(); c != -1; c = in.read()){
                 //System.out.print((char)c);
                 response += (char) c;
@@ -99,6 +102,23 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,Void> {
         } catch(IOException e){
             e.printStackTrace();
         }
-        return null;
+        return response;
     }
+
+    protected void onPostExecute(String resp){
+        super.onPostExecute(resp);
+        //parse the string
+        JSONObject jResp=null;
+        try {
+            jResp = new JSONObject(resp);
+            if(jResp.has("key")) {
+                ((ProfileActivity)this.context).postReviewDone(jResp, true);
+            } else{
+                ((ProfileActivity)this.context).postReviewDone(null, false);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

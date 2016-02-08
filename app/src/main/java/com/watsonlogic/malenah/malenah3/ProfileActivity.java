@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -32,6 +33,12 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     Button submitCommentBtn;
     EditText commentEditText;
+    private User user;
+
+    private int id;
+    private String username;
+    private String firstName;
+    private String lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +47,10 @@ public class ProfileActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.context = getApplicationContext();
+
+        //set user
+        user = new User(0,"watsokel","Kelvin","Watson");
+
         submitCommentBtn=(Button)findViewById(R.id.submitCommentBtn);
         commentEditText=(EditText)findViewById(R.id.commentEditText);
         submitCommentBtn.setOnClickListener(
@@ -53,12 +64,33 @@ public class ProfileActivity extends AppCompatActivity {
                     postParams.put("comment", commentEditText.getText().toString());
                     postParams.put("provider", String.valueOf(profile.getId()));
                     Log.d("POSTREVIEW","execute async task from ProfileActivity()");
-                    new PostReviewAsyncTask(context, postParams).execute();
+                    new PostReviewAsyncTask(ProfileActivity.this, postParams).execute();
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow((null == getCurrentFocus()) ? null : getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     commentEditText.setText("");
                 }
             });
+    }
+
+    public void postReviewDone(JSONObject j, Boolean result) throws JSONException {
+        //parse string
+        TextView newR = new TextView(this);
+        newR.setBackgroundResource(R.drawable.pink_border);
+        newR.setTextColor(Color.parseColor("#FFFFFF"));
+        newR.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+        newR.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        if(result){
+            //append comment to scrollable view
+            String u = (String) j.get("username");
+            String r = String.valueOf(j.get("rating"));
+            String c = (String) j.get("comment");
+            newR.setText(u + '\n' + r + '\n' + c + '\n');
+            linearLayout.addView(newR);
+        }else{
+            //append error to scrollable view
+            newR.setText("Sorry, an error occurred while posting your comment. Please try again.");
+            linearLayout.addView(newR);
+        }
     }
 
     @Override
@@ -93,6 +125,8 @@ public class ProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
     protected void setCommentArea(boolean hasReview) throws JSONException {
         if(hasReview){

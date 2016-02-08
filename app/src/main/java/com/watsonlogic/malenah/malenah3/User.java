@@ -10,6 +10,17 @@ public class User implements Serializable {
     private String lastName;
     private ArrayList<RowItem> favorites;
 
+    public User(){
+        //default constructor
+    }
+
+    public User(int id, String username, String firstName, String lastName) {
+        this.id = id;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public int getId() {
         return id;
     }

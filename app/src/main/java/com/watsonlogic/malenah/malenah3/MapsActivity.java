@@ -124,7 +124,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
                 user = (User) bundle.getSerializable("user");
                 rowItems = bundle.getParcelableArrayList("items");
                 location = bundle.getParcelable("location");
-                Log.d("MapsActivity", "user=" + user);
+                //Log.d("MapsActivity", "user=" + user);
                 Log.d("MapsActivity", "rowItems=" + rowItems);
                 if (location != null) {
                     userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
