@@ -42,6 +42,7 @@ public class DrawerActivity extends AppCompatActivity
     private ArrayList<RowItem> items = new ArrayList<RowItem>();
     public ArrayList<RowItem> physicians = new ArrayList<RowItem>();
     public ArrayList<RowItem> nurses = new ArrayList<RowItem>();
+    public ArrayList<RowItem> chiropractors = new ArrayList<RowItem>();
     private User user = new User();
     public String allProvidersStr = new String();
     private LocationManager locationManager;
@@ -145,6 +146,8 @@ public class DrawerActivity extends AppCompatActivity
             mapsIntent.putExtra("items", physicians);
         } else if(v.getId()==R.id.nurses){
             mapsIntent.putExtra("items",nurses);
+        }else if(v.getId()==R.id.chiropractors){
+            mapsIntent.putExtra("items",chiropractors);
         }
         mapsIntent.putExtra("location", location);
         Log.d("DRAWER", "items=" + physicians.toString());
@@ -225,6 +228,8 @@ public class DrawerActivity extends AppCompatActivity
                         physicians.add(ri);
                     } else if(obj.getString("category").equals("Nurse Practitioner") || obj.getString("category").equals("Nurse")){
                         nurses.add(ri);
+                    } else if(obj.getString("category").equals("Chiropractor")){
+                        chiropractors.add(ri);
                     }
                 } catch(JSONException e){
                     e.printStackTrace();

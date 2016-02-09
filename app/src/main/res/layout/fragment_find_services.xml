@@ -217,7 +217,8 @@
                 android:background="#000"
                 android:minHeight="100dp"
                 android:minWidth="100dp"
-                android:scaleType="fitCenter" />
+                android:scaleType="fitCenter"
+                android:onClick="launchMapsActivity" />
 
             <ImageButton
                 android:id="@+id/insurance"

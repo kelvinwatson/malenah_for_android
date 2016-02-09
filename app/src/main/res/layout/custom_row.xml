@@ -99,7 +99,7 @@
                 android:layout_marginTop="5dp" />
 
             <ToggleButton android:id="@+id/favoriteToggle"
-                android:layout_width="40dp"
+                android:layout_width="25dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:textOn=""
@@ -110,7 +110,7 @@
                 android:layout_marginTop="5dp" />
 
             <ImageButton
-                android:layout_width="40dp"
+                android:layout_width="25dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:id="@+id/writeReviewIcon"

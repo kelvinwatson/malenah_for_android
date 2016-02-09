@@ -129,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 .setPositiveButton("Settings",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                Intent i = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                                startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                                //Intent i = new Intent(Settings.ACTION_SETTINGS);
+                                startActivity(new Intent(Settings.ACTION_SETTINGS));
                             }
                         }
                 )
