@@ -141,6 +141,4 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
     public void setLng(double lng) {
         this.lng = lng;
     }
-
-
 }

@@ -98,20 +98,46 @@
         android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/header"
         android:layout_alignStart="@+id/header"
-        android:weightSum="1"
-        android:focusableInTouchMode="true">
-        <EditText
+        android:weightSum="1">
+
+        <LinearLayout
+            android:id="@+id/footer2"
             android:layout_width="0dp"
             android:layout_weight="0.75"
             android:layout_height="wrap_content"
-            android:id="@+id/commentEditText"
-            android:hint="Add a comment"
-            android:background="#006699"
-            android:ems="10"
-            android:inputType="textMultiLine"
-            android:lines="4"
-            android:fontFamily="sans-serif-light"
-            android:textColor="#fff" />
+            android:background="#000"
+            android:orientation="vertical"
+            android:weightSum="1"
+            android:focusableInTouchMode="true">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_weight="0.25"
+                    android:layout_height="0dp"
+                    android:hint="Add a rating between 0-5"
+                    android:textColorHint="#d3d3d3"
+                    android:inputType="numberDecimal"
+                    android:ems="10"
+                    android:id="@+id/ratingEditText"
+                    android:background="@drawable/blue_border"
+                    android:textColor="#fff" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_weight="0.75"
+                    android:layout_height="0dp"
+                    android:id="@+id/commentEditText"
+                    android:hint="Add a comment"
+                    android:textColorHint="#d3d3d3"
+                    android:background="@drawable/blue_border"
+                    android:ems="10"
+                    android:inputType="textMultiLine"
+                    android:lines="4"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="#fff" />
+
+        </LinearLayout>
+
         <Button
             android:layout_width="0dp"
             android:layout_weight="0.25"
@@ -119,6 +145,7 @@
             android:text="Submit"
             android:id="@+id/submitCommentBtn"
             android:fontFamily="sans-serif-light" />
+
     </LinearLayout>
 
 

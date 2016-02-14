@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -21,8 +22,6 @@ import android.view.inputmethod.InputMethodManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,8 +32,9 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout linearLayout;
     Button submitCommentBtn;
     EditText commentEditText;
+    EditText ratingEditText;
     private User user;
-
+    TextView noReviews;
     private int id;
     private String username;
     private String firstName;
@@ -53,14 +53,35 @@ public class ProfileActivity extends AppCompatActivity {
 
         submitCommentBtn=(Button)findViewById(R.id.submitCommentBtn);
         commentEditText=(EditText)findViewById(R.id.commentEditText);
+        ratingEditText=(EditText)findViewById(R.id.ratingEditText);
         submitCommentBtn.setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View view) {
                     Log.v("EditText", commentEditText.getText().toString());
+
+                    /*Check for empty input fields */
+                    String ratingStr = ratingEditText.getText().toString();
+                    String commentStr = commentEditText.getText().toString();
+                    if(TextUtils.isEmpty(ratingStr)){
+                        ratingEditText.setError("You must enter a rating between 0.0 and 5.0.");
+                        return;
+                    }
+                    if(TextUtils.isEmpty(commentStr)){
+                        commentEditText.setError("You must enter a comment.");
+                        return;
+                    }
+
+                    /*Check for invalid input */
+                    double rating = Double.valueOf(ratingEditText.getText().toString());
+                    if (rating<0.0 || rating>5.0){
+                        ratingEditText.setError("Rating must be between 0.0 and 5.0");
+                        return;
+                    }
+
                     //POST THIS COMMENT
                     Map<String,String> postParams = new LinkedHashMap<>();
                     postParams.put("username", "androidUser");
-                    postParams.put("rating", "4.0");
+                    postParams.put("rating", ratingEditText.getText().toString());
                     postParams.put("comment", commentEditText.getText().toString());
                     postParams.put("provider", String.valueOf(profile.getId()));
                     Log.d("POSTREVIEW","execute async task from ProfileActivity()");
@@ -78,13 +99,16 @@ public class ProfileActivity extends AppCompatActivity {
         newR.setBackgroundResource(R.drawable.pink_border);
         newR.setTextColor(Color.parseColor("#FFFFFF"));
         newR.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
-        newR.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        newR.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
         if(result){
             //append comment to scrollable view
+            if(noReviews.getVisibility()==View.VISIBLE){ //remove "no reviews yet"
+                noReviews.setVisibility(View.GONE);
+            }
             String u = (String) j.get("username");
             String r = String.valueOf(j.get("rating"));
             String c = (String) j.get("comment");
-            newR.setText(u + '\n' + r + '\n' + c + '\n');
+            newR.setText("User:"+u+'\n'+"Rating:"+r+'\n'+"Comment:"+c+'\n');
             linearLayout.addView(newR);
         }else{
             //append error to scrollable view
@@ -126,8 +150,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
-
     protected void setCommentArea(boolean hasReview) throws JSONException {
         if(hasReview){
             Log.d("PROFILE","Has Reviews!");
@@ -145,21 +167,22 @@ public class ProfileActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 TextView review = new TextView(this);
-                review.setBackgroundResource(R.drawable.pink_border);
+                //review.setBackgroundResource(R.drawable.pink_border);
                 review.setTextColor(Color.parseColor("#FFFFFF"));
                 review.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
-                review.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                review.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
                 review.setText(uName + '\n' + rating + '\n' + comment + '\n');
                 linearLayout.addView(review);
             }
         }else{
             Log.d("PROFILE", "No Reviews!");
-            TextView noReviews = new TextView(this);
+            noReviews = new TextView(this);
             noReviews.setTextColor(Color.parseColor("#FFFFFF"));
             noReviews.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
             noReviews.setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
             noReviews.setGravity(Gravity.CENTER);
             noReviews.setText("No Reviews Yet");
+            noReviews.setVisibility(View.VISIBLE);
             linearLayout.addView(noReviews);
         }
     }
@@ -182,10 +205,12 @@ public class ProfileActivity extends AppCompatActivity {
                 .into(profilePhoto);
 
         TextView nameDesignation = (TextView)findViewById(R.id.nameDesignation); //get reference to rowName
+        nameDesignation.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         String nd = profile.getFirstName()+" "+profile.getLastName()+", "+profile.getDesignation();
         nameDesignation.setText(nd);
 
         TextView organization = (TextView)findViewById(R.id.organization);
+        organization.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         organization.setText(profile.getOrganization());
 
         TextView address = (TextView)findViewById(R.id.address);
@@ -198,6 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
         address.setText(a);
 
         TextView specializations = (TextView)findViewById(R.id.specializations);
+        specializations.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         StringBuilder sb = new StringBuilder();
         String delim = "";
         for (String s : profile.getSpecialty()) {

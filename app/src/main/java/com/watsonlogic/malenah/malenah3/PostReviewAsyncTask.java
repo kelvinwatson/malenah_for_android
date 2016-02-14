@@ -36,11 +36,6 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,String> {
     }
 
     public byte[] generatePostData(){
-        //Map<String,String> dummyParams = new LinkedHashMap<>();
-        //dummyParams.put("username", "testUser2");
-        //dummyParams.put("rating", "4.6");
-        //dummyParams.put("comment", "New comment from Android application");
-        //dummyParams.put("provider", "5629499534213120");
         Log.d("POSTREVIEW","in generatePostData()");
         Log.d("POSTREVIEW",postParams.toString());
         StringBuilder postData = new StringBuilder();
@@ -120,5 +115,4 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,String> {
             e.printStackTrace();
         }
     }
-
 }

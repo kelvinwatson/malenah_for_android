@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:weightSum="1"
     android:measureWithLargestChild="false"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:background="#000">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -39,9 +40,10 @@
                 android:layout_height="wrap_content"
                 android:text="rowName"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="21sp"
-                android:textColor="#000000"
-                android:layout_marginTop="5dp" />
+                android:textSize="17sp"
+                android:textColor="#fff"
+                android:layout_marginTop="5dp"
+                android:fontFamily="sans-serif-light" />
 
             <TextView
                 android:id="@+id/rowOrganization"
@@ -49,8 +51,9 @@
                 android:layout_height="wrap_content"
                 android:text="rowOrganization"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#606060"
-                android:fontFamily="sans-serif-light" />
+                android:textColor="#d3d3d3"
+                android:fontFamily="sans-serif-light"
+                android:textSize="11sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -58,9 +61,10 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="rowAddress"
                 android:id="@+id/rowAddress"
-                android:textColor="#606060"
+                android:textColor="#d3d3d3"
                 android:focusableInTouchMode="false"
-                android:fontFamily="sans-serif-light" />
+                android:fontFamily="sans-serif-light"
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/rowNotes"
@@ -68,9 +72,10 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="rowNotes"
-                android:textColor="#878787"
+                android:textColor="#F5F5F5"
                 android:layout_marginBottom="5dp"
-                android:fontFamily="sans-serif-light" />
+                android:fontFamily="sans-serif-light"
+                android:textSize="10sp" />
 
         </LinearLayout>
 
@@ -96,7 +101,18 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp" />
+                android:layout_marginTop="5dp"
+                android:visibility="invisible" />
+
+            <ImageButton
+                android:layout_width="23dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/writeReviewIcon"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/review_write"
+                android:scaleType="fitCenter" />
 
             <ToggleButton android:id="@+id/favoriteToggle"
                 android:layout_width="25dp"
@@ -107,17 +123,9 @@
                 android:background="@drawable/toggle"
                 android:checked="false"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dp" />
-
-            <ImageButton
-                android:layout_width="25dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:id="@+id/writeReviewIcon"
                 android:layout_marginTop="5dp"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/review_write"
-                android:scaleType="fitCenter" />
+                android:visibility="invisible" />
+
         </LinearLayout>
     </LinearLayout>
 

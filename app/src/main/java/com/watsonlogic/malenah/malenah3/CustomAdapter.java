@@ -3,6 +3,7 @@ package com.watsonlogic.malenah.malenah3;
 import com.squareup.picasso.Picasso;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +57,13 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         });
 
         TextView rowName = (TextView)customRow.findViewById(R.id.rowName); //get reference to rowName
+        if(item.getCategory().equals("Physician")){
+            rowName.setTextColor(Color.parseColor("#00BFFF"));
+        } else if(item.getCategory().equals("Nurse") || item.getCategory().equals("Nurse Practitioner")){
+            rowName.setTextColor(Color.parseColor("#FF1493"));
+        } else if(item.getCategory().equals("Chiropractor")){
+            rowName.setTextColor(Color.parseColor("#FF8C00"));
+        }
         String nameDesignation = item.getFirstName()+" "+item.getLastName()+", "+item.getDesignation();
         rowName.setText(nameDesignation);
 

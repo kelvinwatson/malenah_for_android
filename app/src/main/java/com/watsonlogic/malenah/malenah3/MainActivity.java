@@ -25,13 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     final Context context = this;
@@ -206,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         //Source: http://stackoverflow.com/questions/15997079/getlastknownlocation-always-return-null-after-i-re-install-the-apk-file-via-ecli
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
-        networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network statu
+        networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network status
         //Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
         if (!gpsEnabled && !networkEnabled){
             Log.d("LOCATION (GPS)", "disabled, ask user to enable!");
