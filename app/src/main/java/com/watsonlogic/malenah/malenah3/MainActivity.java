@@ -14,17 +14,18 @@ import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+
 import com.squareup.picasso.Picasso;
 
 
@@ -143,29 +144,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null && activeNetwork.isConnected()) {
-            return true;
-        } else{
-            return false;
-        }
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 
     public boolean isConnectedMobile(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
-        if(info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_MOBILE) {
-            return true;
-        }
-        return false;
+        return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 
     public boolean isConnectedWifi(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
-        if (info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI){
-            return true;
-        }
-        return false;
+        return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     public boolean isFullyConnected(Context context){
@@ -202,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
         networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network status
-        //Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
         if (!gpsEnabled && !networkEnabled){
             Log.d("LOCATION (GPS)", "disabled, ask user to enable!");
             //show dialog to allow user to enable location settings
