@@ -25,11 +25,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+public class MainActivity extends AppCompatActivity implements LocationListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     final Context context = this;
     private LocationManager locationManager;
     private boolean gpsEnabled;
@@ -38,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private DataReceiver dataReceiver;
     private String providers;
     private Button startButton;
+    private GoogleApiClient mGoogleApiClient;
+    private static final int RC_SIGN_IN = 9001;
+    private TextView mStatusTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +57,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView(R.layout.activity_main);
         startButton = (Button)findViewById(R.id.startButton); //get reference to button
         loadIcon();
+        configureGoogleLogin();
+    }
+
+    public void configureGoogleLogin() {
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        // Customize sign-in button. The sign-in button can be displayed in
+        // multiple sizes and color schemes. It can also be contextually
+        // rendered based on the requested scopes. For example. a red button may
+        // be displayed when Google+ scopes are requested, but a white button
+        // may be displayed when only basic profile is requested. Try adding the
+        // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
+        // difference.
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setScopes(gso.getScopeArray());
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
     }
 
     public void loadIcon(){
@@ -89,17 +127,37 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         startService(fetchIntent);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+            // ...
+        }
+    }
+
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
     public class DataReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
             /*TODO: Launch Drawer Activity once allData (incl. user details) string (a JSON string) received from FetchAllDataService*/
             Log.d("FETCH", "back in Main, onReceive()");
             providers = intent.getStringExtra("providers");
-            Log.d("FETCH","in Main, providers="+providers);
+            Log.d("FETCH", "in Main, providers=" + providers);
             Intent loginIntent = new Intent(MainActivity.this, DrawerActivity.class);
             loginIntent.putExtra("providers", providers);
             Log.d("FETCH", "Launch button enabled");
-            startButton.setEnabled(true);
+            //startButton.setEnabled(true);
 
             /*TODO: (see MyReceiver extends BroadcastReceiver onReceive method in MainActivity */
             /*TODO: save received broadcasted data into String allData using intent.getStringExtras*/
@@ -244,6 +302,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 case 1:
                     break;
             }
+        }
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d("SignInActivity", "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            Toast.makeText(getApplicationContext(), acct.getDisplayName() + " logged in", Toast.LENGTH_LONG).show();
+            startButton.setEnabled(true); //disable start button until all data retrieved
+        } else {
+            // Signed out, show unauthenticated UI.
+            startButton.setEnabled(false);
+            Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
         }
     }
 
