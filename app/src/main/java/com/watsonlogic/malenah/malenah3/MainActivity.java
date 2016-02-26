@@ -37,6 +37,9 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity implements LocationListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     final Context context = this;
@@ -66,7 +69,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
+                .requestIdToken(getString(R.string.server_client_id))
+                //.requestEmail()
                 .build();
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
@@ -317,7 +321,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             // Signed in successfully, show authenticated UI.
             signInButton.setVisibility(View.GONE);
             GoogleSignInAccount acct = result.getSignInAccount();
-            Toast.makeText(getApplicationContext(),acct.getDisplayName()+" logged in, ID:"+acct.getId(),Toast.LENGTH_LONG).show();
+
+            //new
+            String idToken = acct.getIdToken();
+            Map<String,String> postParams = new LinkedHashMap<>();
+            postParams.put("idToken", idToken);
+            Log.d("VerifyToken","execute async task from MainActivity()");
+            new VerifyTokenAsyncTask(MainActivity.this, postParams).execute();
+
+            Toast.makeText(getApplicationContext(),acct.getDisplayName()+",ID:"+acct.getId()+" Token:"+idToken,Toast.LENGTH_LONG).show();
+
+            //TODO: AsyncTask to send token to server
+
             startButton.setVisibility(View.VISIBLE);
             startButton.setEnabled(true); //disable start button until all data retrieved
         } else {
