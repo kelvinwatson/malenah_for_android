@@ -23,21 +23,17 @@ public class FetchAllDataService extends Service {
     public FetchAllDataService() {
     }
 
-
-
-    /*TODO: Retreive data from database and broadcast it back to MainActivity*/
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId){
         try {
             Runnable r = new Runnable() {   //MUST place service code in thread(req'd for Service class)
                 @Override
                 public void run() {
-                    //TODO: retrieve provider data database
                     //http://developer.android.com/reference/java/net/HttpURLConnection.html
                     //http://stackoverflow.com/questions/8376072/whats-the-readstream-method-i-just-can-not-find-it-anywhere
                     try {
-                        url = new URL("http://malenah-api-prod.appspot.com/provider");
-                        Log.d("FETCH","calling http://malenah-api-prod.appspot.com/provider");
+                        url = new URL("http://malenah-android.appspot.com/provider");
+                        Log.d("FETCH","calling http://malenah-android.appspot.com/provider");
                         urlConnection = (HttpURLConnection)url.openConnection();
                     } catch (IOException e) {
                         e.printStackTrace();

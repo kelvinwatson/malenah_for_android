@@ -39,7 +39,7 @@ public class FetchReviewsAsyncTask extends AsyncTask<Long, Void, String> {
     protected String doInBackground(Long... i) {
         try {
             primitive = providerId.longValue();
-            urlStr = "http://malenah-api-prod.appspot.com/provider/"+primitive+"/review";
+            urlStr = "http://malenah-android.appspot.com/provider/"+primitive+"/review";
             url = new URL(urlStr);
             urlConnection = (HttpURLConnection)url.openConnection();
         } catch (IOException e) {

@@ -70,7 +70,7 @@ public class PostReviewAsyncTask extends AsyncTask<Void,Void,String> {
         URL url = null;
         HttpURLConnection conn = null;
         try {
-            url = new URL("http://malenah-api-prod.appspot.com/review");
+            url = new URL("http://malenah-android.appspot.com/review");
             conn = (HttpURLConnection)url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");

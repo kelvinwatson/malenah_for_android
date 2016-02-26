@@ -50,12 +50,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
     private TextView mStatusTextView;
+    private SignInButton signInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         startButton = (Button)findViewById(R.id.startButton); //get reference to button
+        startButton.setVisibility(View.GONE);
         loadIcon();
         configureGoogleLogin();
     }
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         // may be displayed when only basic profile is requested. Try adding the
         // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
         // difference.
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
         findViewById(R.id.sign_in_button).setOnClickListener(this);
@@ -313,8 +315,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Log.d("SignInActivity", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
+            signInButton.setVisibility(View.GONE);
             GoogleSignInAccount acct = result.getSignInAccount();
-            Toast.makeText(getApplicationContext(), acct.getDisplayName() + " logged in", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),acct.getDisplayName()+" logged in, ID:"+acct.getId(),Toast.LENGTH_LONG).show();
+            startButton.setVisibility(View.VISIBLE);
             startButton.setEnabled(true); //disable start button until all data retrieved
         } else {
             // Signed out, show unauthenticated UI.

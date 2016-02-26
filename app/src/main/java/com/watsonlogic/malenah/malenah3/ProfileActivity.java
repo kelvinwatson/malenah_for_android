@@ -100,15 +100,17 @@ public class ProfileActivity extends AppCompatActivity {
         newR.setTextColor(Color.parseColor("#FFFFFF"));
         newR.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
         newR.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
-        if(result){
+        if(result) {
             //append comment to scrollable view
-            if(noReviews.getVisibility()==View.VISIBLE){ //remove "no reviews yet"
-                noReviews.setVisibility(View.GONE);
+            if (noReviews != null){
+                if (noReviews.getVisibility() == View.VISIBLE) { //remove "no reviews yet"
+                    noReviews.setVisibility(View.GONE);
+                }
             }
             String u = (String) j.get("username");
             String r = String.valueOf(j.get("rating"));
             String c = (String) j.get("comment");
-            newR.setText("User:"+u+'\n'+"Rating:"+r+'\n'+"Comment:"+c+'\n');
+            newR.setText("User:" + u + '\n' + "Rating:" + r + '\n' + "Comment:" + c + '\n');
             linearLayout.addView(newR);
         }else{
             //append error to scrollable view

@@ -42,15 +42,25 @@
         android:layout_centerHorizontal="true"
         android:scrollIndicators="end" />
 
-    <Button
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/startButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp" />
+
+    <Button
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:text="LAUNCH"
         android:id="@+id/startButton"
         android:onClick="launchDrawerActivity"
-        android:layout_below="@+id/titleIcon"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginBottom="19dp"
+        android:layout_alignParentEnd="false" />
 
 
 

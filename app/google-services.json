@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_id": "malenah-android",
+    "project_number": "244305224411",
+    "name": "malenah-android"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244305224411:android:d994b26350384431",
+        "client_id": "android:com.watsonlogic.malenah.malenah3",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "com.watsonlogic.malenah.malenah3"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "244305224411-3n7ir9uq20tfjv9n9ju2e3bhs40nu3uf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.watsonlogic.malenah.malenah3",
+            "certificate_hash": "09B5022452EEB7D00218B6747A2A93045187EF36"
+          }
+        },
+        {
+          "client_id": "244305224411-kcc9c6a3t5gbt265h3clkipddi4imjfs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
