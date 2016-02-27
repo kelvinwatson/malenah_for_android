@@ -26,12 +26,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
-    private String TAG = "VerifyTokenAsyncTask";
+    private String TAG = "id_token";
     private Context context;
     Map<String, String> postParams;
 

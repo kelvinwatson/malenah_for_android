@@ -322,16 +322,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             signInButton.setVisibility(View.GONE);
             GoogleSignInAccount acct = result.getSignInAccount();
 
-            //new
             String idToken = acct.getIdToken();
+            Log.d("idToken",idToken);
             Map<String,String> postParams = new LinkedHashMap<>();
-            postParams.put("idToken", idToken);
-            Log.d("VerifyToken","execute async task from MainActivity()");
+            postParams.put("id_token", idToken); //pass to App Engine Python API
+            Log.d("VerifyToken", "execute async task from MainActivity()");
+            //TODO: AsyncTask to send token to server
             new VerifyTokenAsyncTask(MainActivity.this, postParams).execute();
 
-            Toast.makeText(getApplicationContext(),acct.getDisplayName()+",ID:"+acct.getId()+" Token:"+idToken,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),acct.getDisplayName()+",ID:"+ acct.getId()+" Token:"+idToken,Toast.LENGTH_LONG).show();
 
-            //TODO: AsyncTask to send token to server
 
             startButton.setVisibility(View.VISIBLE);
             startButton.setEnabled(true); //disable start button until all data retrieved
