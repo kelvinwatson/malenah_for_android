@@ -240,16 +240,33 @@ public class DrawerActivity extends AppCompatActivity
     private void setFavoriteProviders(){
         for(RowItem f : favorites){
             for(RowItem p : physicians){
-                //if equal, set favorited to true in physicians array
+                if(f.getId()==p.getId()){      //set favorited to true in physicians array
+                    p.setFavourited(true);
+                }
             }
             for(RowItem n : nurses){
-                //if equal, set favorited to true in physicians array
-
+                if(f.getId()==n.getId()){       //set favorited to true in nurses array
+                    n.setFavourited(true);
+                }
             }
             for(RowItem c : chiropractors){
-                //if equal, set favorited to true in physicians array
-
+                if(f.getId()==c.getId()){           //set favorited to true in chiropractor array
+                    c.setFavourited(true);
+                }
             }
+        }
+        debugPrint();
+    }
+
+    private void debugPrint(){
+        for(RowItem p : physicians){
+            Log.d("DRAWER",p.getFirstName()+" "+p.isFavourited());
+        }
+        for(RowItem n : nurses){
+            Log.d("DRAWER",n.getFirstName()+" "+n.isFavourited());
+        }
+        for(RowItem c : chiropractors){
+            Log.d("DRAWER",c.getFirstName()+" "+c.isFavourited());
         }
     }
 
@@ -317,11 +334,11 @@ public class DrawerActivity extends AppCompatActivity
             allProvidersStr=(String)b.getString("allProviders");
             userInfoStr=(String)b.getString("userInfo");
             Log.d("DRAWER GOTS",allProvidersStr);
-            Log.d("DRAWER GOTS",userInfoStr);
+            Log.d("DRAWER GOTS", userInfoStr);
 
             parseProviders(allProvidersStr);
             parseUser(userInfoStr);
-
+            setFavoriteProviders();
             /*JSONArray allProvidersJSONArr = null;
             try{
                 allProvidersJSONArr = new JSONArray(allProvidersStr);
