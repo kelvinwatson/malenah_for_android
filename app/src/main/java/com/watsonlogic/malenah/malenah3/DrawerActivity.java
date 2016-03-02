@@ -473,67 +473,6 @@ public class DrawerActivity extends AppCompatActivity
         /*TODO: Set data to be sent with the fragment */
         Fragment f = null;
 
-        /*Test items*/
-        /*RowItem r0 = new RowItem("physicians",
-                0,
-                "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
-                "Amir",
-                "Nassim",
-                "MD",
-                "Neurosurgery",
-                "Some Organization",
-                12,
-                3456,
-                "ABC Street",
-                "Portland",
-                "OR",
-                "United States",
-                "97201",
-                "good with brains!",
-                45.6,
-                -123,
-                0.9,
-                false);
-        RowItem r1 = new RowItem("physicians",
-                1,
-                "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
-                "Olivia",
-                "Benson",
-                "MD",
-                "Family Practice",
-                "An Organization!",
-                33,
-                8913,
-                "DEF Boulevard",
-                "Portland",
-                "OR",
-                "United States",
-                "97201",
-                "Currently accepting new patients!",
-                45.8,
-                -122.3,
-                1.5,
-                true);
-        RowItem r2 = new RowItem("physicians",
-                2,
-                "http://www.constantinebrown.com/wp-content/uploads/2013/11/photo_21418_20120211.jpg",
-                "William",
-                "Bose",
-                "MD",
-                "Pediatrician",
-                "Reliable Inc!",
-                111,
-                2222,
-                "GHIJ Ave",
-                "Portland",
-                "OR",
-                "United States",
-                "97201",
-                "No longer accepting new patients",
-                45.6,
-                -122.7,
-                9.2,
-                true);*/
         switch(position){
             case 0: {
                 mTitle = "Find Services";
@@ -552,10 +491,10 @@ public class DrawerActivity extends AppCompatActivity
                 Bundle bundle = new Bundle();
                 //(WORKS) TEST: bundle.putString("somePrettyKey", "someBeautifulValue");
                 //(WORKS) TEST: Passing in array list to favorites fragment
-                /*ArrayList<RowItem> testList = new ArrayList<RowItem>();
-                testList.add(r0);
-                testList.add(r1);
-                bundle.putParcelableArrayList("testArrayList", testList);*/
+                //ArrayList<RowItem> testList = new ArrayList<RowItem>();
+                //testList.add(r0);
+                //testList.add(r1);
+                bundle.putParcelableArrayList("favorites", favorites);
                 f = MyFavoritesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
                 break;

@@ -75,10 +75,10 @@ public class MyFavoritesFragment extends Fragment {
         Bundle bundle = getArguments();
         ArrayList<RowItem> recvd;
         if(bundle != null){
-            recvd = bundle.getParcelableArrayList("testArrayList");
+            recvd = bundle.getParcelableArrayList("favorites");
             Log.d("MyFavoritesFragment","recvd"+recvd);
-            //Log.d("MyFavoritesFragment","receivedItems.get(0).getName()"+recvd.get(0).getId());
-            //Log.d("MyFavoritesFragment","receivedItems.get(1).getName()="+recvd.get(1));
+            Log.d("MyFavoritesFragment","receivedItems.get(0).getName()"+recvd.get(0).getFirstName());
+            Log.d("MyFavoritesFragment","receivedItems.get(1).getName()="+recvd.get(1).getFirstName());
         }
 
         return inflater.inflate(R.layout.fragment_my_favorites, container, false);
