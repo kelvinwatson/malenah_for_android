@@ -37,6 +37,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static final int SET_LOCATION_REQUEST = 1;  // The request code
     private DataReceiver dataReceiver;
     private String providers;
+    private String userInfo;
     private Button startButton;
     private GoogleApiClient mGoogleApiClient;
     private static final int RC_SIGN_IN = 9001;
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
-                //.requestEmail()
+                .requestEmail()
                 .build();
         // Build a GoogleApiClient with access to the Google Sign-In API and the
         // options specified by gso.
@@ -176,7 +179,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void launchDrawerActivity(View v) {
         Intent i = new Intent(MainActivity.this, DrawerActivity.class);
         i.putExtra("allProviders",providers);
+        i.putExtra("userInfo",userInfo);
         Log.d("DRAWER", "sending providers from Main to Drawer");
+        Log.d("DRAWER", "sending userInfo from Main to Drawer");
         startActivity(i);
     }
 
@@ -315,6 +320,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
+    public void verifyTokenDone(String userInformation){
+        userInfo = userInformation;
+        Log.d("VerifyToken done",userInfo);
+    }
+
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d("SignInActivity", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
@@ -323,15 +333,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             GoogleSignInAccount acct = result.getSignInAccount();
 
             String idToken = acct.getIdToken();
-            Log.d("idToken",idToken);
+            String email = acct.getEmail();
+            String name = acct.getDisplayName();
+            Log.d("VerifyToken",idToken);
+            Log.d("VerifyToken",email);
+            Log.d("VerifyToken",name);
+
             Map<String,String> postParams = new LinkedHashMap<>();
             postParams.put("id_token", idToken); //pass to App Engine Python API
+            postParams.put("email",email);
+            postParams.put("name",name);
+
             Log.d("VerifyToken", "execute async task from MainActivity()");
-            //TODO: AsyncTask to send token to server
             new VerifyTokenAsyncTask(MainActivity.this, postParams).execute();
 
-            Toast.makeText(getApplicationContext(),acct.getDisplayName()+",ID:"+ acct.getId()+" Token:"+idToken,Toast.LENGTH_LONG).show();
-
+            Toast.makeText(getApplicationContext(),acct.getDisplayName()+",ID:"+ acct.getId(),Toast.LENGTH_LONG).show();
 
             startButton.setVisibility(View.VISIBLE);
             startButton.setEnabled(true); //disable start button until all data retrieved

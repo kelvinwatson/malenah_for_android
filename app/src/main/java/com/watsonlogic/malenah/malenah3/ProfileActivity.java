@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
         this.context = getApplicationContext();
 
         //set user
-        user = new User(0,"watsokel","Kelvin","Watson");
+        //user = new User(0,"watsokel","Kelvin","Watson");
 
         submitCommentBtn=(Button)findViewById(R.id.submitCommentBtn);
         commentEditText=(EditText)findViewById(R.id.commentEditText);

@@ -1,19 +1,9 @@
 package com.watsonlogic.malenah.malenah3;
 
 import android.content.Context;
-import android.net.http.HttpResponseCache;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +19,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
-    private String TAG = "id_token";
+    private String TAG = "VerifyToken";
     private Context context;
     Map<String, String> postParams;
 
@@ -108,14 +98,16 @@ public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
 
     protected void onPostExecute(String resp) {
         super.onPostExecute(resp);
+        Log.d(TAG + " resp", resp);
+        ((MainActivity) this.context).verifyTokenDone(resp);
         //parse the string
-        JSONObject jResp = null;
-        /*try {
+        /*JSONObject jResp = null;
+        try {
             jResp = new JSONObject(resp);
             if (jResp.has("key")) {
-                ((MainActivity) this.context).postReviewDone(jResp, true);
+                ((MainActivity) this.context).verifyTokenDone(jResp);
             } else {
-                ((ProfileActivity) this.context).postReviewDone(null, false);
+                ((MainActivity) this.context).verifyTokenDone(null);
             }
         } catch (JSONException e) {
             e.printStackTrace();

@@ -4,53 +4,54 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User implements Serializable {
-    private int id;
-    private String username;
-    private String firstName;
-    private String lastName;
+    private long key;
+    private String userId;
+    private String email;
+    private String name;
     private ArrayList<RowItem> favorites;
 
-    public User(){
+    public User() {
         //default constructor
     }
 
-    public User(int id, String username, String firstName, String lastName) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
+    public User(long key, String userId, String email, String name, ArrayList<RowItem> favorites) {
+        this.key = key;
+        this.userId = userId;
+        this.email = email;
+        this.name = name;
+        this.favorites = favorites;
     }
 
-    public int getId() {
-        return id;
+    public long getKey() {
+        return key;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setKey(long key) {
+        this.key = key;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getEmail() {
+        return email;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public ArrayList<RowItem> getFavorites() {

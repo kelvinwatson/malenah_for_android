@@ -89,7 +89,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         TextView distance = (TextView)customRow.findViewById(R.id.distance);
         distance.setText(item.getDistance()+"mi");
 
-        ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
+        /*ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
         if(item.isFavourited()) {
             Log.d("CUSTOMADAPTER",item.getFirstName()+" favorited");
             favoriteToggle.setChecked(true);
@@ -113,7 +113,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 //TODO:Uncomment the startService() call below when updateFavorites setup correctly
                 // getContext().startService(updateFavorites);
             }
-        });
+        });*/
         return customRow;
     }
 }

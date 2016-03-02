@@ -43,11 +43,15 @@ public class DrawerActivity extends AppCompatActivity
     public ArrayList<RowItem> physicians = new ArrayList<RowItem>();
     public ArrayList<RowItem> nurses = new ArrayList<RowItem>();
     public ArrayList<RowItem> chiropractors = new ArrayList<RowItem>();
-    private User user = new User();
+    private ArrayList<RowItem> favorites = new ArrayList<RowItem>();
+    private User user = null;
     public String allProvidersStr = new String();
+    public String userInfoStr = new String();
     private LocationManager locationManager;
     private Location location = null;
     private Context context;
+    private JSONObject userObj = null;
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -70,10 +74,10 @@ public class DrawerActivity extends AppCompatActivity
         // activity's onStart() method*/
 
         //DUMMY DATA
-        user.setId(1325);
-        user.setFirstName("Kelvin");
-        user.setLastName("Watson");
-        user.setFavorites(null);
+        //user.setId(1325);
+        //user.name("Kelvin");
+        //user.setLastName("Watson");
+        //user.setFavorites(null);
 
         /*RowItem r0 = new RowItem("physicians",
                 0,
@@ -179,14 +183,146 @@ public class DrawerActivity extends AppCompatActivity
         getDataFromMain();
     }
 
+    private void parseProviders(String allProvidersStr){
+        JSONArray allProvidersJSONArr = null;
+        try{
+            allProvidersJSONArr = new JSONArray(allProvidersStr);
+            Log.d("DRAWER,allProJSONArr=",allProvidersJSONArr.toString());
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+        System.out.println("DRAWER,allProJSONArrLen" + allProvidersJSONArr.length());
+        for(int i=0,len=allProvidersJSONArr.length(); i<len; i++){
+            JSONObject obj = null;
+            try{
+                obj = allProvidersJSONArr.getJSONObject(i);
+                JSONArray spA = obj.getJSONArray("specializations");
+                ArrayList<String> spL = new ArrayList<String>();
+                for(int k=0,le=spA.length();k<le;k++){
+                    spL.add(((JSONObject)spA.get(k)).getString("name"));
+                }
+                RowItem ri = new RowItem(
+                        obj.getString("category"),
+                        obj.getLong("key"),
+                        obj.getString("icon_url"),
+                        obj.getString("first_name"),
+                        obj.getString("last_name"),
+                        obj.getString("designation"),
+                        spL,
+                        obj.getString("organization"),
+                        obj.getString("building"),
+                        obj.getString("street"),
+                        obj.getString("city"),
+                        obj.getString("state"),
+                        obj.getString("country"),
+                        obj.getString("zipcode"),
+                        obj.getString("notes"),
+                        obj.getDouble("latitude"),
+                        obj.getDouble("longitude"),
+                        0.0,
+                        false
+                );
+                if(obj.getString("category").equals("Physician")){
+                    physicians.add(ri);
+                } else if(obj.getString("category").equals("Nurse Practitioner") || obj.getString("category").equals("Nurse")){
+                    nurses.add(ri);
+                } else if(obj.getString("category").equals("Chiropractor")){
+                    chiropractors.add(ri);
+                }
+            } catch(JSONException e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //TODO: Compare favorites array and physicians/nurses/chiropractors array
+    //TODO: Set favorited to the physicians/nurses/chiropractors array
+    private void setFavoriteProviders(){
+        for(RowItem f : favorites){
+            for(RowItem p : physicians){
+                //if equal, set favorited to true in physicians array
+            }
+            for(RowItem n : nurses){
+                //if equal, set favorited to true in physicians array
+
+            }
+            for(RowItem c : chiropractors){
+                //if equal, set favorited to true in physicians array
+
+            }
+        }
+    }
+
+    private void parseUser(String userInfoStr){
+        try{
+            userObj = new JSONObject(userInfoStr);
+            long key = userObj.getLong("key");
+            String userId = userObj.getString("user_id");
+            String email = userObj.getString("email");
+            String faves = userObj.getString("favorites");
+            JSONArray favoriteProvidersArr = new JSONArray(faves);
+
+            Log.d("DRAWER parseU",""+key);
+            Log.d("DRAWER parseU",userId);
+            Log.d("DRAWER parseU",""+email);
+            Log.d("DRAWER parseU",faves);
+            Log.d("DRAWER parseU",""+favoriteProvidersArr);
+
+            for(int i=0,len=favoriteProvidersArr.length(); i<len; i++){
+                JSONObject obj = null;
+                obj = favoriteProvidersArr.getJSONObject(i);
+                JSONArray spA = obj.getJSONArray("specializations");
+                ArrayList<String> spL = new ArrayList<String>();
+                for (int k = 0, le = spA.length(); k < le; k++) {
+                    spL.add(((JSONObject) spA.get(k)).getString("name"));
+                }
+                RowItem ri = new RowItem(
+                        obj.getString("category"),
+                        obj.getLong("key"),
+                        obj.getString("icon_url"),
+                        obj.getString("first_name"),
+                        obj.getString("last_name"),
+                        obj.getString("designation"),
+                        spL,
+                        obj.getString("organization"),
+                        obj.getString("building"),
+                        obj.getString("street"),
+                        obj.getString("city"),
+                        obj.getString("state"),
+                        obj.getString("country"),
+                        obj.getString("zipcode"),
+                        obj.getString("notes"),
+                        obj.getDouble("latitude"),
+                        obj.getDouble("longitude"),
+                        0.0,
+                        true
+                );
+                favorites.add(ri);
+            }
+            Log.d("DRAWER parseU",""+favorites);
+
+
+            //TODO: parse favorites private ArrayList<RowItem> favorites
+
+            //TODO: call user constructor'
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
 
     protected void getDataFromMain(){
         /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
         final Bundle b = getIntent().getExtras(); //retrieve data on first onStart only
         if(b!=null){
             allProvidersStr=(String)b.getString("allProviders");
-            Log.d("DRAWER,GOTS",allProvidersStr);
-            JSONArray allProvidersJSONArr = null;
+            userInfoStr=(String)b.getString("userInfo");
+            Log.d("DRAWER GOTS",allProvidersStr);
+            Log.d("DRAWER GOTS",userInfoStr);
+
+            parseProviders(allProvidersStr);
+            parseUser(userInfoStr);
+
+            /*JSONArray allProvidersJSONArr = null;
             try{
                 allProvidersJSONArr = new JSONArray(allProvidersStr);
                 Log.d("DRAWER,allProJSONArr=",allProvidersJSONArr.toString());
@@ -234,8 +370,7 @@ public class DrawerActivity extends AppCompatActivity
                 } catch(JSONException e){
                     e.printStackTrace();
                 }
-
-            }
+            }*/
         } else{
             return;
         }
