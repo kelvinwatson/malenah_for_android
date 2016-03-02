@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,8 @@ public class MyFavoritesFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ArrayList<RowItem> recvd;
+    private TextView tv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -73,12 +77,12 @@ public class MyFavoritesFragment extends Fragment {
         //WORKS Log.d("MyFavoritesFragment","Received="+receivedStr);
         //TODO: Retrieve data (below code works)
         Bundle bundle = getArguments();
-        ArrayList<RowItem> recvd;
+
         if(bundle != null){
             recvd = bundle.getParcelableArrayList("favorites");
             Log.d("MyFavoritesFragment","recvd"+recvd);
             Log.d("MyFavoritesFragment","receivedItems.get(0).getName()"+recvd.get(0).getFirstName());
-            Log.d("MyFavoritesFragment","receivedItems.get(1).getName()="+recvd.get(1).getFirstName());
+            Log.d("MyFavoritesFragment", "receivedItems.get(1).getName()=" + recvd.get(1).getFirstName());
         }
 
         return inflater.inflate(R.layout.fragment_my_favorites, container, false);
@@ -123,4 +127,20 @@ public class MyFavoritesFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        tv = (TextView)getActivity().findViewById(R.id.allFaves);
+        String test = null;
+        for(RowItem r : recvd){
+            test += r.getId()+" "+r.getFirstName()+" "+r.getCity()+'\n';
+        }
+        tv.setText(test);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+    }
 }

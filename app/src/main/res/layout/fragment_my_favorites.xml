@@ -10,8 +10,4 @@
         android:text="New Text"
         android:id="@+id/allFaves" />
 
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="my faves fragment"
-        android:id="@+id/testText" />
-
 </FrameLayout>
