@@ -105,39 +105,32 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
             for (RowItem f : userFavorites) {
                 Log.d("CustomAdapter", ""+f.getId());
                 if(f.getId()==item.getId()){
-                    //TODO: display the checked toggle button
                     favoriteToggle.setChecked(true);
                 } else{
-                    //TODO: display the unchecked toggle button
                     favoriteToggle.setChecked(false);
                 }
             }
         }
 
-        /*if(item.isFavourited()) {
-            Log.d("CUSTOMADAPTER",item.getFirstName()+" favorited");
-            favoriteToggle.setChecked(true);
-        } else {
-            Log.d("CUSTOMADAPTER",item.getLastName()+" NOT favorited");
-            favoriteToggle.setChecked(false);
-        }
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                final boolean isCheckedFinal = isChecked;
-                item.setFavourited(isChecked);
-                Intent updateFavorites = new Intent(context, UpdateFavorites.class);
-                try {
-                    updateFavorites.putExtra("userID", user.getId());
-                    updateFavorites.putExtra("itemID", item.getId());
-                    updateFavorites.putExtra("checkedFinal", isCheckedFinal);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                //TODO: Async task to update favorite
+                Log.d("CustomAdapter isChecked",item.getId()+" "+item.getFirstName()+" "+isChecked);
+//                final boolean isCheckedFinal = isChecked;
+//                item.setFavourited(isChecked);
+//                Intent updateFavorites = new Intent(context, UpdateFavorites.class);
+//                try {
+//                    updateFavorites.putExtra("userID", user.getId());
+//                    updateFavorites.putExtra("itemID", item.getId());
+//                    updateFavorites.putExtra("checkedFinal", isCheckedFinal);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 //TODO:Uncomment the startService() call below when updateFavorites setup correctly
                 // getContext().startService(updateFavorites);
             }
-        });*/
+        });
         return customRow;
     }
 }
