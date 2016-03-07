@@ -81,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+
+
         // Customize sign-in button. The sign-in button can be displayed in
         // multiple sizes and color schemes. It can also be contextually
         // rendered based on the requested scopes. For example. a red button may
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 return;
             }
         }
+        mGoogleApiClient.connect();
         //practice a post here?
         //Log.d("POSTREVIEW","execute async task from MainActivity()");
         //new PostReviewAsyncTask().execute();
@@ -179,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void launchDrawerActivity(View v) {
         Intent i = new Intent(MainActivity.this, DrawerActivity.class);
         i.putExtra("allProviders",providers);
-        i.putExtra("userInfo",userInfo);
+        i.putExtra("user",userInfo);
         Log.d("DRAWER", "sending providers from Main to Drawer");
         Log.d("DRAWER", "sending userInfo from Main to Drawer");
         startActivity(i);
@@ -328,6 +331,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d("SignInActivity", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
+            App.getInstance().setClient(mGoogleApiClient);
+
             // Signed in successfully, show authenticated UI.
             signInButton.setVisibility(View.GONE);
             GoogleSignInAccount acct = result.getSignInAccount();

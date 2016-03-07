@@ -4,6 +4,7 @@ import com.squareup.picasso.Picasso;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +19,19 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 
 public class CustomAdapter extends ArrayAdapter<RowItem> {
+    private final String TAG = "CustomAdapter";
     Context context;
     private User user;
+    ArrayList<RowItem> userFavorites = null;
+
 
     public CustomAdapter(Context context, ArrayList<RowItem> resources, User user) {
         super(context, R.layout.custom_row, resources);
         this.context=context;
         this.user=user;
+        if(user.getFavorites() != null){
+            this.userFavorites = user.getFavorites();
+        }
     }
 
 
@@ -51,7 +58,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 //Toast.makeText(context,"clicked"+v.getTag()+"item="+item.getFirstName(),Toast.LENGTH_SHORT).show();
 
                 Intent i = new Intent(context, ProfileActivity.class);
-                i.putExtra("profileItem",item);
+                i.putExtra("profileItem",(Parcelable)item);
                 context.startActivity(i);
             }
         });
@@ -87,10 +94,27 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         rowNotes.setText(ss);
 
         TextView distance = (TextView)customRow.findViewById(R.id.distance);
-        distance.setText(item.getDistance()+"mi");
+        distance.setText(item.getDistance() + "mi");
 
-        /*ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
-        if(item.isFavourited()) {
+        //TODO check user's favorites and compare to the current row item; display gold star if favorited
+
+        Log.d("CustomAdapter","printing/checking user faves!");
+
+        ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
+        if(userFavorites != null || userFavorites.size()>0) {
+            for (RowItem f : userFavorites) {
+                Log.d("CustomAdapter", ""+f.getId());
+                if(f.getId()==item.getId()){
+                    //TODO: display the checked toggle button
+                    favoriteToggle.setChecked(true);
+                } else{
+                    //TODO: display the unchecked toggle button
+                    favoriteToggle.setChecked(false);
+                }
+            }
+        }
+
+        /*if(item.isFavourited()) {
             Log.d("CUSTOMADAPTER",item.getFirstName()+" favorited");
             favoriteToggle.setChecked(true);
         } else {

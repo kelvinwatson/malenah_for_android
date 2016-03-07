@@ -23,18 +23,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class DrawerActivity extends AppCompatActivity
-        implements  MyFavoritesFragment.OnFragmentInteractionListener,
+public class DrawerActivity extends AppCompatActivity implements
         FindServicesFragment.OnFragmentInteractionListener,
+        MyFavoritesFragment.OnFragmentInteractionListener,
+        MyProfileFragment.OnFragmentInteractionListener,
         LogoutFragment.OnFragmentInteractionListener,
         NavigationDrawerFragment.NavigationDrawerCallbacks,
         android.location.LocationListener  {
@@ -51,6 +54,7 @@ public class DrawerActivity extends AppCompatActivity
     private Location location = null;
     private Context context;
     private JSONObject userObj = null;
+    private GoogleApiClient mGoogleApiClient;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -65,87 +69,7 @@ public class DrawerActivity extends AppCompatActivity
 
     public void launchMapsActivity(View v){
         Intent mapsIntent = new Intent(this,MapsActivity.class);
-
-        //TODO: currently uses dummy data, but should be using user and items from
-        // database data. This data originates from MainActivity's call to a service, which broadcasts it
-        // back to MainActivity, and MainActivity then passes the data as an intent to this (DrawerActivity)'s onStart
-        // method, which extracts the data and saves it to variables in this class. So, we should be
-        // using that data, passing user and items array lists that were retrieved in this
-        // activity's onStart() method*/
-
-        //DUMMY DATA
-        //user.setId(1325);
-        //user.name("Kelvin");
-        //user.setLastName("Watson");
-        //user.setFavorites(null);
-
-        /*RowItem r0 = new RowItem("physicians",
-                0,
-                "http://images.onlysimchas.com.s3.amazonaws.com/uploads/2015/09/doctor.png?crop=faces&w=&fit=crop",
-                "Amir",
-                "Nassim",
-                "MD",
-                "Neurosurgery",
-                "AN and Associates!",
-                "12",
-                "ABC Street",
-                "Portland",
-                "OR",
-                "United States",
-                "97201",
-                "good with brains!",
-                45.5171,
-                -122.6811,
-                0.9,
-                false);
-        RowItem r1 = new RowItem("physicians",
-                1,
-                "http://simon-cen.com/dev/5204/SJGH/Images/Doctors/woman_doctor_02.png",
-                "Olivia",
-                "Benson",
-                "MD",
-                "Family Practice",
-                "Benson Inc.",
-                33,
-                8913,
-                "DEF Boulevard",
-                "Portland",
-                "OR",
-                "United States",
-                "97201",
-                "Currently accepting new patients!",
-                45.5128,
-                -122.6853,
-                1.5,
-                true);
-        RowItem r2 = new RowItem("physicians",
-                2,
-                "http://www.constantinebrown.com/wp-content/uploads/2013/11/photo_21418_20120211.jpg",
-                "William",
-                "Bose",
-                "MD",
-                "Pediatrician",
-                "Bose Health!",
-                111,
-                2222,
-                "GHIJ Ave",
-                "Portland",
-                "OR",
-                "United States",
-                "97201",
-                "No longer accepting new patients",
-                45.517539,
-                -122.679578,
-                9.2,
-                true);*/
-        /* Send the data to MapsActivity */
-        //TODO: May need to empty out the items arraylist as it seems to append data without
-        //regard to whether the item already exists in the arraylist
-        /*if(!items.isEmpty()){
-            items.clear(); //unsure if this is needed when finally using real data
-        }
-        items.add(r0); items.add(r1); items.add(r2);*/
-        mapsIntent.putExtra("user", (Serializable) user);
+        mapsIntent.putExtra("user",user);
         if(v.getId()==R.id.physicians) {
             mapsIntent.putExtra("items", physicians);
         } else if(v.getId()==R.id.nurses){
@@ -181,6 +105,8 @@ public class DrawerActivity extends AppCompatActivity
         getLocation();
 
         getDataFromMain();
+
+
     }
 
     private void parseProviders(String allProvidersStr){
@@ -271,10 +197,12 @@ public class DrawerActivity extends AppCompatActivity
     }
 
     private void parseUser(String userInfoStr){
+        //TODO: Create user object
         try{
             userObj = new JSONObject(userInfoStr);
             long key = userObj.getLong("key");
             String userId = userObj.getString("user_id");
+            String name = userObj.getString("name");
             String email = userObj.getString("email");
             String faves = userObj.getString("favorites");
             JSONArray favoriteProvidersArr = new JSONArray(faves);
@@ -317,77 +245,25 @@ public class DrawerActivity extends AppCompatActivity
                 favorites.add(ri);
             }
             Log.d("DRAWER parseU",""+favorites);
+            user = new User(key,userId,email,name,favorites);//Create user object
+            Log.d("DRAWER parseU",""+user.getName());
 
-
-            //TODO: parse favorites private ArrayList<RowItem> favorites
-
-            //TODO: call user constructor'
         } catch(JSONException e){
             e.printStackTrace();
         }
     }
 
     protected void getDataFromMain(){
-        /*TODO: Get all data as a string from MainActivity, parse to items array, and save data */
         final Bundle b = getIntent().getExtras(); //retrieve data on first onStart only
         if(b!=null){
             allProvidersStr=(String)b.getString("allProviders");
-            userInfoStr=(String)b.getString("userInfo");
+            userInfoStr=(String)b.getString("user");
             Log.d("DRAWER GOTS",allProvidersStr);
             Log.d("DRAWER GOTS", userInfoStr);
 
             parseProviders(allProvidersStr);
             parseUser(userInfoStr);
             setFavoriteProviders();
-            /*JSONArray allProvidersJSONArr = null;
-            try{
-                allProvidersJSONArr = new JSONArray(allProvidersStr);
-                Log.d("DRAWER,allProJSONArr=",allProvidersJSONArr.toString());
-            } catch(JSONException e){
-                e.printStackTrace();
-            }
-            System.out.println("DRAWER,allProJSONArrLen"+allProvidersJSONArr.length());
-            for(int i=0,len=allProvidersJSONArr.length(); i<len; i++){
-                JSONObject obj = null;
-                try{
-                    obj = allProvidersJSONArr.getJSONObject(i);
-                    JSONArray spA = obj.getJSONArray("specializations");
-                    ArrayList<String> spL = new ArrayList<String>();
-                    for(int k=0,le=spA.length();k<le;k++){
-                        spL.add(((JSONObject)spA.get(k)).getString("name"));
-                    }
-                    RowItem ri = new RowItem(
-                            obj.getString("category"),
-                            obj.getLong("key"),
-                            obj.getString("icon_url"),
-                            obj.getString("first_name"),
-                            obj.getString("last_name"),
-                            obj.getString("designation"),
-                            spL,
-                            obj.getString("organization"),
-                            obj.getString("building"),
-                            obj.getString("street"),
-                            obj.getString("city"),
-                            obj.getString("state"),
-                            obj.getString("country"),
-                            obj.getString("zipcode"),
-                            obj.getString("notes"),
-                            obj.getDouble("latitude"),
-                            obj.getDouble("longitude"),
-                            0.0,
-                            false
-                    );
-                    if(obj.getString("category").equals("Physician")){
-                        physicians.add(ri);
-                    } else if(obj.getString("category").equals("Nurse Practitioner") || obj.getString("category").equals("Nurse")){
-                        nurses.add(ri);
-                    } else if(obj.getString("category").equals("Chiropractor")){
-                        chiropractors.add(ri);
-                    }
-                } catch(JSONException e){
-                    e.printStackTrace();
-                }
-            }*/
         } else{
             return;
         }
@@ -462,7 +338,6 @@ public class DrawerActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -499,17 +374,29 @@ public class DrawerActivity extends AppCompatActivity
                 f.setArguments(bundle);
                 break;
             }case 2: {
+                mTitle = "My Profile";
+                f = MyProfileFragment.newInstance("", "");//load fragment 0
+                break;
+            }case 3: {
                 mTitle = "Logout";
-                f = LogoutFragment.newInstance("", "");//load fragment 0
+                //f = LogoutFragment.newInstance("", "");//load fragment 0
+                googleSignOut();
                 break;
             }default:{
-                mTitle = "Find Services";
-                f = FindServicesFragment.newInstance("", "");//load fragment 0
-                break;
+                fragmentManager.beginTransaction().replace(R.id.container, f).commit();
+                //mTitle = "Find Services";
+                //f = FindServicesFragment.newInstance("", "");//load fragment 0
+                //break;
             }
         }
         fragmentManager.beginTransaction().replace(R.id.container, f).commit();
     }
+
+    private void googleSignOut(){
+        mGoogleApiClient = App.getInstance().getClient();
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+    }
+
 
     public void onSectionAttached(int number) {
         switch (number) {
@@ -521,6 +408,9 @@ public class DrawerActivity extends AppCompatActivity
                 break;
             case 3:
                 mTitle = getString(R.string.title_section3);
+                break;
+            case 4:
+                mTitle = getString(R.string.title_section4);
                 break;
         }
     }

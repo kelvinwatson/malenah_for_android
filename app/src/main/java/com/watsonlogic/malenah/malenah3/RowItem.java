@@ -3,9 +3,11 @@ package com.watsonlogic.malenah.malenah3;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.android.gms.maps.model.Marker;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RowItem implements Parcelable{
+public class RowItem implements Parcelable,Serializable {
     private String category;
     private long id;
     private String iconURL;

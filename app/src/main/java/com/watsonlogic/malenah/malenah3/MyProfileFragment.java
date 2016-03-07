@@ -3,27 +3,25 @@ package com.watsonlogic.malenah.malenah3;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MyFavoritesFragment.OnFragmentInteractionListener} interface
+ * {@link MyProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link MyFavoritesFragment#newInstance} factory method to
+ * Use the {@link MyProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyFavoritesFragment extends Fragment {
+public class MyProfileFragment extends Fragment {
+    private TextView tv;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -32,8 +30,6 @@ public class MyFavoritesFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ArrayList<RowItem> recvd;
-    private TextView tv;
 
     private OnFragmentInteractionListener mListener;
 
@@ -43,11 +39,11 @@ public class MyFavoritesFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyFavoritesFragment.
+     * @return A new instance of fragment MyProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyFavoritesFragment newInstance(String param1, String param2) {
-        MyFavoritesFragment fragment = new MyFavoritesFragment();
+    public static MyProfileFragment newInstance(String param1, String param2) {
+        MyProfileFragment fragment = new MyProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -55,7 +51,7 @@ public class MyFavoritesFragment extends Fragment {
         return fragment;
     }
 
-    public MyFavoritesFragment() {
+    public MyProfileFragment() {
         // Required empty public constructor
     }
 
@@ -72,24 +68,7 @@ public class MyFavoritesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        //WORKS String receivedStr = getArguments().getString("somePrettyKey");
-        //WORKS Log.d("MyFavoritesFragment","Received="+receivedStr);
-        //TODO: Retrieve data (below code works)
-        Bundle bundle = getArguments();
-
-        if(bundle != null){
-            recvd = bundle.getParcelableArrayList("favorites");
-            Log.d("MyFavoritesFragment","recvd"+recvd);
-            if(recvd.size()>0){
-                Log.d("MyFavoritesFragment","receivedItems.get(0).getName()"+recvd.get(0).getFirstName());
-                Log.d("MyFavoritesFragment", "receivedItems.get(1).getName()=" + recvd.get(1).getFirstName());
-            }else{
-                //no favorites yet
-            }
-        }
-
-        return inflater.inflate(R.layout.fragment_my_favorites, container, false);
+        return inflater.inflate(R.layout.fragment_my_profile, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -97,6 +76,13 @@ public class MyFavoritesFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        tv = (TextView)getActivity().findViewById(R.id.profileTextView);
+        tv.setText("This is the My Profile Fragment");
     }
 
     @Override
@@ -131,24 +117,4 @@ public class MyFavoritesFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        tv = (TextView)getActivity().findViewById(R.id.allFaves);
-        String test = null;
-        if(recvd.size()>0) {
-            for (RowItem r : recvd) {
-                test += r.getId() + " " + r.getFirstName() + " " + r.getCity() + '\n';
-            }
-            tv.setText(test);
-        } else{ //no favorites
-            tv.setText("You do not have any favorites yet");
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 }
