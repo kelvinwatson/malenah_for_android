@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.TextView;
  */
 public class MyProfileFragment extends Fragment {
     private TextView tv;
+    private User user;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,6 +69,11 @@ public class MyProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            user = (User)bundle.getSerializable("user");
+            Log.d("MyProfileFragment", "user" + user);
+        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_profile, container, false);
     }
@@ -82,7 +89,7 @@ public class MyProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         tv = (TextView)getActivity().findViewById(R.id.profileTextView);
-        tv.setText("This is the My Profile Fragment");
+        tv.setText(user.getUserId()+"\n"+user.getName()+"\n"+user.getEmail()+"\n");
     }
 
     @Override

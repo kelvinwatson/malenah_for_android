@@ -71,22 +71,12 @@ public class MyFavoritesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
-        //WORKS String receivedStr = getArguments().getString("somePrettyKey");
-        //WORKS Log.d("MyFavoritesFragment","Received="+receivedStr);
-        //TODO: Retrieve data (below code works)
         Bundle bundle = getArguments();
 
         if(bundle != null){
             recvd = bundle.getParcelableArrayList("favorites");
             Log.d("MyFavoritesFragment","recvd"+recvd);
-            if(recvd.size()>0){
-                Log.d("MyFavoritesFragment","receivedItems.get(0).getName()"+recvd.get(0).getFirstName());
-                Log.d("MyFavoritesFragment", "receivedItems.get(1).getName()=" + recvd.get(1).getFirstName());
-            }else{
-                //no favorites yet
-            }
         }
 
         return inflater.inflate(R.layout.fragment_my_favorites, container, false);

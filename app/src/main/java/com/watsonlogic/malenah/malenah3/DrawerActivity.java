@@ -337,7 +337,6 @@ public class DrawerActivity extends AppCompatActivity implements
                 } catch (Exception e) {
                     setFailSafeLocation();
                 }
-                //TODO: if(above call fail put in the portland lat lng
             }
         } else {
             Log.d("LOCATION","Neither NETWORK_PROVIDER nor GPS enabled!"); //unlikely due to mainActivity's check
@@ -359,20 +358,11 @@ public class DrawerActivity extends AppCompatActivity implements
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
-
-        /*TODO: Set data to be sent with the fragment */
         Fragment f = null;
-
         switch(position){
             case 0: {
                 mTitle = "Find Services";
                 Bundle bundle = new Bundle();
-                //TEST: passing in arraylist of data to maps fragment
-                /*ArrayList<RowItem> testList = new ArrayList<RowItem>();
-                testList.add(r0);
-                testList.add(r1);
-                testList.add(r2);*/
-                //bundle.putParcelableArrayList("testArrayList",testList);
                 f = FindServicesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
                 fragmentManager.beginTransaction().replace(R.id.container, f).commit();
@@ -380,24 +370,21 @@ public class DrawerActivity extends AppCompatActivity implements
             }case 1: {
                 mTitle = "My Favorites";
                 Bundle bundle = new Bundle();
-                //(WORKS) TEST: bundle.putString("somePrettyKey", "someBeautifulValue");
-                //(WORKS) TEST: Passing in array list to favorites fragment
-                //ArrayList<RowItem> testList = new ArrayList<RowItem>();
-                //testList.add(r0);
-                //testList.add(r1);
                 bundle.putParcelableArrayList("favorites", favorites);
-                f = MyFavoritesFragment.newInstance("", "");//load fragment 0
+                f = MyFavoritesFragment.newInstance("", "");
                 f.setArguments(bundle);
                 fragmentManager.beginTransaction().replace(R.id.container, f).commit();
                 break;
             }case 2: {
                 mTitle = "My Profile";
-                f = MyProfileFragment.newInstance("", "");//load fragment 0
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("user",user);
+                f = MyProfileFragment.newInstance("", "");
+                f.setArguments(bundle);
                 fragmentManager.beginTransaction().replace(R.id.container, f).commit();
                 break;
             }case 3: {
                 mTitle = "Logout";
-                //f = LogoutFragment.newInstance("", "");//load fragment 0
                 googleSignOut();
                 break;
             }default:{
@@ -409,8 +396,6 @@ public class DrawerActivity extends AppCompatActivity implements
     }
 
     private void googleSignOut(){
-        //mGoogleApiClient = App.getInstance().getClient();
-
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         finish();
         android.os.Process.killProcess(android.os.Process.myPid());
