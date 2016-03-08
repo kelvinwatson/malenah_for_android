@@ -31,8 +31,10 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         super(context, R.layout.custom_row, resources);
         this.context=context;
         this.user=user;
-        if(user.getFavorites() != null){
-            this.userFavorites = user.getFavorites();
+        if(user != null) {
+            if (user.getFavorites() != null) {
+                this.userFavorites = user.getFavorites();
+            }
         }
     }
 
@@ -102,33 +104,39 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
 
         Log.d("CustomAdapter","printing/checking user faves!");
 
-        ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
-        if(userFavorites != null || userFavorites.size()>0) {
-            for (RowItem f : userFavorites) {
-                Log.d("CustomAdapter", ""+f.getId());
-                if(f.getId()==item.getId()){
-                    favoriteToggle.setChecked(true);
-                } else{
-                    favoriteToggle.setChecked(false);
-                }
-            }
-        }
 
-        favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d("CustomAdapter isChecked", item.getId() + " " + item.getFirstName() + " " + isChecked);
-                Map<String,String> postParams = new LinkedHashMap<>();
-                if(isChecked){ //user favorited the provider
-                    postParams.put("post_action","add_favorite");
-                }else{ //user unfavorited the provider
-                    postParams.put("post_action","remove_favorite");
+        ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
+        if(user != null) {
+            favoriteToggle.setVisibility(View.VISIBLE);
+            if (userFavorites != null || userFavorites.size() > 0) {
+                for (RowItem f : userFavorites) {
+                    Log.d("CustomAdapter", "" + f.getId());
+                    if (f.getId() == item.getId()) {
+                        favoriteToggle.setChecked(true);
+                    } else {
+                        favoriteToggle.setChecked(false);
+                    }
                 }
-                postParams.put("favorites[]",String.valueOf(item.getId()));
-                postParams.put("user_id", user.getUserId());
-                new UpdateUserAsyncTask(postParams).execute();
             }
-        });
+
+            favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.d("CustomAdapter isChecked", item.getId() + " " + item.getFirstName() + " " + isChecked);
+                    Map<String, String> postParams = new LinkedHashMap<>();
+                    if (isChecked) { //user favorited the provider
+                        postParams.put("post_action", "add_favorite");
+                    } else { //user unfavorited the provider
+                        postParams.put("post_action", "remove_favorite");
+                    }
+                    postParams.put("favorites[]", String.valueOf(item.getId()));
+                    postParams.put("user_id", user.getUserId());
+                    new UpdateUserAsyncTask(postParams).execute();
+                }
+            });
+        } else {
+            favoriteToggle.setVisibility(View.INVISIBLE);
+        }
         return customRow;
     }
 }

@@ -10,7 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.app.ListFragment;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
@@ -23,16 +30,20 @@ import java.util.ArrayList;
  * Use the {@link MyFavoritesFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyFavoritesFragment extends Fragment {
+public class MyFavoritesFragment extends android.support.v4.app.ListFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "MyFavoritesFragment";
+    private ListView list;
+    ListAdapter adapter=null;
+    View rootView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ArrayList<RowItem> recvd;
+    private ArrayList<RowItem> recvdFavorites;
     private TextView tv;
 
     private OnFragmentInteractionListener mListener;
@@ -75,11 +86,12 @@ public class MyFavoritesFragment extends Fragment {
         Bundle bundle = getArguments();
 
         if(bundle != null){
-            recvd = bundle.getParcelableArrayList("favorites");
-            Log.d("MyFavoritesFragment","recvd"+recvd);
+            recvdFavorites = bundle.getParcelableArrayList("favorites");
+            Log.d("MyFavoritesFragment","recvd"+recvdFavorites);
         }
-
-        return inflater.inflate(R.layout.fragment_my_favorites, container, false);
+        rootView = inflater.inflate(R.layout.fragment_my_favorites,container, false);
+        return rootView;
+        //return inflater.inflate(R.layout.fragment_my_favorites, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -124,16 +136,24 @@ public class MyFavoritesFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        tv = (TextView)getActivity().findViewById(R.id.allFaves);
+        //tv = (TextView)getActivity().findViewById(R.id.allFaves);
         String test = null;
-        if(recvd.size()>0) {
-            for (RowItem r : recvd) {
+        if(recvdFavorites.size()>0) {
+            for (RowItem r : recvdFavorites) {
                 test += r.getId() + " " + r.getFirstName() + " " + r.getCity() + '\n';
             }
-            tv.setText(test);
+            Log.d(TAG,test);
         } else{ //no favorites
-            tv.setText("You do not have any favorites yet");
+            //tv.setText("You do not have any favorites yet");
+            Log.d(TAG,"No favorites yet");
         }
+        setUpListView();
+    }
+
+    protected void setUpListView() {
+        adapter = new CustomAdapter(getActivity(), recvdFavorites, null);
+        list = getListView();
+        list.setAdapter(adapter);
     }
 
     @Override
