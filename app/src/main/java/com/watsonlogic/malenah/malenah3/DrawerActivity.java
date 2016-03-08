@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONArray;
@@ -40,7 +42,13 @@ public class DrawerActivity extends AppCompatActivity implements
         MyProfileFragment.OnFragmentInteractionListener,
         LogoutFragment.OnFragmentInteractionListener,
         NavigationDrawerFragment.NavigationDrawerCallbacks,
-        android.location.LocationListener  {
+        android.location.LocationListener,
+        GoogleApiClient.OnConnectionFailedListener {
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 
     private ArrayList<RowItem> items = new ArrayList<RowItem>();
     public ArrayList<RowItem> physicians = new ArrayList<RowItem>();
@@ -106,7 +114,14 @@ public class DrawerActivity extends AppCompatActivity implements
 
         getDataFromMain();
 
-
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
     }
 
     private void parseProviders(String allProvidersStr){
@@ -273,7 +288,7 @@ public class DrawerActivity extends AppCompatActivity implements
 
     protected void locationDone(Location location) {
         this.location = location;
-        Log.d("DrawerActivity(locDone)", location.getLatitude()+" "+location.getLongitude());
+        Log.d("DrawerActivity(locDone)", location.getLatitude() + " " + location.getLongitude());
         if(location != null){
             onLocationChanged(location);
         }
@@ -360,6 +375,7 @@ public class DrawerActivity extends AppCompatActivity implements
                 //bundle.putParcelableArrayList("testArrayList",testList);
                 f = FindServicesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(R.id.container, f).commit();
                 break;
             }case 1: {
                 mTitle = "My Favorites";
@@ -372,10 +388,12 @@ public class DrawerActivity extends AppCompatActivity implements
                 bundle.putParcelableArrayList("favorites", favorites);
                 f = MyFavoritesFragment.newInstance("", "");//load fragment 0
                 f.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(R.id.container, f).commit();
                 break;
             }case 2: {
                 mTitle = "My Profile";
                 f = MyProfileFragment.newInstance("", "");//load fragment 0
+                fragmentManager.beginTransaction().replace(R.id.container, f).commit();
                 break;
             }case 3: {
                 mTitle = "Logout";
@@ -383,18 +401,19 @@ public class DrawerActivity extends AppCompatActivity implements
                 googleSignOut();
                 break;
             }default:{
+                mTitle = "Find Services";
+                f = FindServicesFragment.newInstance("", "");//load fragment 0
                 fragmentManager.beginTransaction().replace(R.id.container, f).commit();
-                //mTitle = "Find Services";
-                //f = FindServicesFragment.newInstance("", "");//load fragment 0
-                //break;
             }
         }
-        fragmentManager.beginTransaction().replace(R.id.container, f).commit();
     }
 
     private void googleSignOut(){
-        mGoogleApiClient = App.getInstance().getClient();
+        //mGoogleApiClient = App.getInstance().getClient();
+
         Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 

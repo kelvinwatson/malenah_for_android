@@ -332,6 +332,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Log.d("SignInActivity", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             App.getInstance().setClient(mGoogleApiClient);
+            //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
 
             // Signed in successfully, show authenticated UI.
             signInButton.setVisibility(View.GONE);

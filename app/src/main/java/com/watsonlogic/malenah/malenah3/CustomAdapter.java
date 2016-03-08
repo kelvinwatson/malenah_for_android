@@ -17,6 +17,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CustomAdapter extends ArrayAdapter<RowItem> {
     private final String TAG = "CustomAdapter";
@@ -115,20 +117,17 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
         favoriteToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //TODO: Async task to update favorite
-                Log.d("CustomAdapter isChecked",item.getId()+" "+item.getFirstName()+" "+isChecked);
-//                final boolean isCheckedFinal = isChecked;
-//                item.setFavourited(isChecked);
-//                Intent updateFavorites = new Intent(context, UpdateFavorites.class);
-//                try {
-//                    updateFavorites.putExtra("userID", user.getId());
-//                    updateFavorites.putExtra("itemID", item.getId());
-//                    updateFavorites.putExtra("checkedFinal", isCheckedFinal);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-                //TODO:Uncomment the startService() call below when updateFavorites setup correctly
-                // getContext().startService(updateFavorites);
+                Log.d("CustomAdapter isChecked", item.getId() + " " + item.getFirstName() + " " + isChecked);
+                Map<String,String> postParams = new LinkedHashMap<>();
+                if(isChecked){ //user favorited the provider
+                    postParams.put("post_action","add_favorite");
+                }else{ //user unfavorited the provider
+                    postParams.put("post_action","remove_favorite");
+                }
+                postParams.put("favorites[]",String.valueOf(item.getId()));
+                postParams.put("user_id", user.getUserId());
+                //new UpdateUserAsyncTask(postParams).execute();
+
             }
         });
         return customRow;
