@@ -97,7 +97,6 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
                 //System.out.print((char)c);
                 response += (char) c;
             }
-            Log.d(TAG,response);
         } catch(IOException e){
             e.printStackTrace();
         }
@@ -106,6 +105,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
 
     protected void onPostExecute(String resp){
         super.onPostExecute(resp);
+        Log.d(TAG,resp);
         //parse the string
     }
 }

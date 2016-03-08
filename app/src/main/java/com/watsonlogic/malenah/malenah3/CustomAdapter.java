@@ -126,8 +126,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                 }
                 postParams.put("favorites[]",String.valueOf(item.getId()));
                 postParams.put("user_id", user.getUserId());
-                //new UpdateUserAsyncTask(postParams).execute();
-
+                new UpdateUserAsyncTask(postParams).execute();
             }
         });
         return customRow;
