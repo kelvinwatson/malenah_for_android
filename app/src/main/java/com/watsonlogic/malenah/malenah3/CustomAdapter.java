@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -60,9 +61,9 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
             @Override
             public void onClick(View v){
                 //Toast.makeText(context,"clicked"+v.getTag()+"item="+item.getFirstName(),Toast.LENGTH_SHORT).show();
-
                 Intent i = new Intent(context, ProfileActivity.class);
                 i.putExtra("profileItem",(Parcelable)item);
+                i.putExtra("user", (Serializable) user);
                 context.startActivity(i);
             }
         });

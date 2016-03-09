@@ -48,9 +48,6 @@ public class ProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         this.context = getApplicationContext();
 
-        //set user
-        //user = new User(0,"watsokel","Kelvin","Watson");
-
         submitCommentBtn=(Button)findViewById(R.id.submitCommentBtn);
         commentEditText=(EditText)findViewById(R.id.commentEditText);
         ratingEditText=(EditText)findViewById(R.id.ratingEditText);
@@ -80,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                     //POST THIS COMMENT
                     Map<String,String> postParams = new LinkedHashMap<>();
-                    postParams.put("username", "androidUser");
+                    postParams.put("username", user.getName());
                     postParams.put("rating", ratingEditText.getText().toString());
                     postParams.put("comment", commentEditText.getText().toString());
                     postParams.put("provider", String.valueOf(profile.getId()));
@@ -127,6 +124,10 @@ public class ProfileActivity extends AppCompatActivity {
         getDataFromMapActivity();
         setHeaderData();
         fetchReviews();
+    }
+
+    public void getUser(){
+
     }
 
     public void fetchReviews(){
@@ -193,9 +194,11 @@ public class ProfileActivity extends AppCompatActivity {
     protected void getDataFromMapActivity(){
         Intent i = getIntent();
         profile = (RowItem) i.getParcelableExtra("profileItem");
+        user = (User)i.getSerializableExtra("user");
         Log.d("PROFILE getParcelable", profile.toString());
         Log.d("PROFILE getParcelable", profile.getFirstName());
         Log.d("PROFILE getParcelable", profile.getLastName());
+        Log.d("PROFILE getSerializable", user.getName());
     }
 
     protected void setHeaderData(){

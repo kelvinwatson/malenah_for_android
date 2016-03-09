@@ -69,27 +69,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public void configureGoogleLogin() {
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        // Configure sign-in to request
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
                 .requestEmail()
                 .build();
-        // Build a GoogleApiClient with access to the Google Sign-In API and the
-        // options specified by gso.
+
+        // Access Google Sign-In API
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-
-        // Customize sign-in button. The sign-in button can be displayed in
-        // multiple sizes and color schemes. It can also be contextually
-        // rendered based on the requested scopes. For example. a red button may
-        // be displayed when Google+ scopes are requested, but a white button
-        // may be displayed when only basic profile is requested. Try adding the
-        // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
-        // difference.
+        // Customize sign-in button.
         signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setScopes(gso.getScopeArray());
@@ -123,9 +115,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             }
         }
         mGoogleApiClient.connect();
-        //practice a post here?
-        //Log.d("POSTREVIEW","execute async task from MainActivity()");
-        //new PostReviewAsyncTask().execute();
     }
 
     protected void getData() {
@@ -135,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         registerReceiver(dataReceiver, filter);
         /* Start the service to fetch data */
         Intent fetchIntent = new Intent(this, FetchAllDataService.class);
-        Log.d("FETCH","Main, starting service to fetch data");
         startService(fetchIntent);
     }
 
@@ -162,20 +150,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public class DataReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            /*TODO: Launch Drawer Activity once allData (incl. user details) string (a JSON string) received from FetchAllDataService*/
-            Log.d("FETCH", "back in Main, onReceive()");
             providers = intent.getStringExtra("providers");
             Log.d("FETCH", "in Main, providers=" + providers);
             Intent loginIntent = new Intent(MainActivity.this, DrawerActivity.class);
             loginIntent.putExtra("providers", providers);
             Log.d("FETCH", "Launch button enabled");
-            //startButton.setEnabled(true);
-
-            /*TODO: (see MyReceiver extends BroadcastReceiver onReceive method in MainActivity */
-            /*TODO: save received broadcasted data into String allData using intent.getStringExtras*/
-            /*TODO: Pass in the above allData string to DrawerActivity using Intent drawerActivity = newIntent(this,drawerActivity.class)*/
-            /*TODO: then call startActivity(drawerActivity)*/
-            /* Notice that startActivity is only called once all the data has been retrieved from database */
         }
     }
 
@@ -183,8 +162,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         Intent i = new Intent(MainActivity.this, DrawerActivity.class);
         i.putExtra("allProviders",providers);
         i.putExtra("user",userInfo);
-        Log.d("DRAWER", "sending providers from Main to Drawer");
-        Log.d("DRAWER", "sending userInfo from Main to Drawer");
         startActivity(i);
     }
 
@@ -212,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         AlertDialog alert = builder.create();
         alert.show();
     }
-    //http://stackoverflow.com/questions/28168867/check-internet-status-from-the-main-activity
+    //Source: http://stackoverflow.com/questions/28168867/check-internet-status-from-the-main-activity
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -280,8 +257,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) { //do nothing
-                    //TODO: disable login btn and disallow user to proceed
-                    //TODO: alert user with toast or dialog, on user network/GPS enabled, call onCreate again
                 }
             });
             dialog.show();
@@ -289,24 +264,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         } else if (gpsEnabled) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
             Log.d("LOCATION (GPS)", LocationManager.GPS_PROVIDER);
-            //TODO: in MapsActivity, do the following:
-            //if(locationManager!=null){
-            //  gpsLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            //  location=gpsLocation;
-            //}
         }else if (networkEnabled){
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,10,this);
             Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
-            //TODO: in MapsActivity, do the following:
-            //if(locationManager!=null){
-            //  networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            //  location=networkLocation;
-            //}
         }
         return true;
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -329,10 +292,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
-        Log.d("SignInActivity", "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            //Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-
             // Signed in successfully, show authenticated UI.
             signInButton.setVisibility(View.GONE);
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -340,24 +300,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             String idToken = acct.getIdToken();
             String email = acct.getEmail();
             String name = acct.getDisplayName();
-            Log.d("VerifyToken",idToken);
-            Log.d("VerifyToken",email);
-            Log.d("VerifyToken",name);
 
             Map<String,String> postParams = new LinkedHashMap<>();
             postParams.put("id_token", idToken); //pass to App Engine Python API
             postParams.put("email",email);
-            postParams.put("name",name);
+            postParams.put("name", name);
 
             Log.d("VerifyToken", "execute async task from MainActivity()");
             new VerifyTokenAsyncTask(MainActivity.this, postParams).execute();
 
-            Toast.makeText(getApplicationContext(),acct.getDisplayName()+",ID:"+ acct.getId(),Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
 
             startButton.setVisibility(View.VISIBLE);
-            startButton.setEnabled(true); //disable start button until all data retrieved
+            startButton.setEnabled(true); //disable start button until logged in and all data retrieved
         } else {
-            // Signed out, show unauthenticated UI.
+            // Sign in failed
             startButton.setEnabled(false);
             Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_LONG).show();
         }
@@ -432,4 +389,3 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     }
 }
-

@@ -66,7 +66,7 @@ public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
         URL url = null;
         HttpURLConnection conn = null;
         try {
-            url = new URL("http://malenah-android.appspot.com/user");
+            url = new URL("https://malenah-android.appspot.com/user");
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
