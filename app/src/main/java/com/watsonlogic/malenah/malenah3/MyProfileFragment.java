@@ -1,15 +1,24 @@
 package com.watsonlogic.malenah.malenah3;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -28,6 +37,9 @@ public class MyProfileFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private EditText editTextName;
+    private EditText editTextEmail;
+    private Button submitChangesBtn;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -88,8 +100,53 @@ public class MyProfileFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        tv = (TextView)getActivity().findViewById(R.id.profileTextView);
-        tv.setText(user.getUserId()+"\n"+user.getName()+"\n"+user.getEmail()+"\n");
+        editTextName = (EditText)getActivity().findViewById(R.id.editTextName);
+        editTextName.setText(user.getName());
+        editTextEmail = (EditText)getActivity().findViewById(R.id.editTextEmail);
+        editTextEmail.setText(user.getEmail());
+        submitChangesBtn = (Button)getActivity().findViewById(R.id.submitChangesBtn);
+        submitChangesBtn.setOnClickListener(
+            new View.OnClickListener() {
+                public void onClick(View view) {
+                    Log.v("EditTextName", editTextName.getText().toString());
+                    Log.v("EditTextEmail", editTextEmail.getText().toString());
+
+                    /*Check for empty input fields */
+                    String nameStr = editTextName.getText().toString();
+                    String emailStr = editTextEmail.getText().toString();
+                    if(TextUtils.isEmpty(nameStr)){
+                        editTextName.setError("You must enter display name.");
+                        return;
+                    }
+                    if(TextUtils.isEmpty(emailStr)){
+                        editTextEmail.setError("You must enter a comment.");
+                        return;
+                    }
+
+                    Map<String, String> postParams = new LinkedHashMap<>();
+                    postParams.put("post_action", "edit_user");
+                    postParams.put("user_id", user.getUserId());
+                    postParams.put("name", nameStr);
+                    postParams.put("email", emailStr);
+                    new UpdateUserAsyncTask(MyProfileFragment.this, postParams).execute();
+
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                }
+            });
+    }
+
+    public void editProfileDone(Boolean r){
+        String msg = null;
+        if(r){
+            //result is 200 - OK
+            msg = "Profile updated successfully.";
+        }else{
+            //result in 400 - error
+            msg = "Unable to edit profile. Please try again later.";
+        }
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 
     @Override

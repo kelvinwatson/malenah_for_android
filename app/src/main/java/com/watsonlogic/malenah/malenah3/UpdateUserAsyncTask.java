@@ -22,16 +22,26 @@ import java.util.Map;
 
 public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
     private final String TAG = "UPDATEFAVORITE";
-    //Context context;
+    public MyProfileFragment profileFragment = null;
     Map<String, String> postParams;
 
     /**
      * Overridden constructor
      */
     public UpdateUserAsyncTask(Map<String, String> postParams) {
-        //this.context = context;
+        Log.d("UpdateUserAsyncTask","non-fragment constructor");
         this.postParams = new LinkedHashMap<String,String>(postParams);
     }
+
+    /**
+     * Overridden constructor
+     */
+    public UpdateUserAsyncTask(MyProfileFragment profileFragment, Map<String, String> postParams) {
+        Log.d("UpdateUserAsyncTask","fragment constructor");
+        this.profileFragment = profileFragment;
+        this.postParams = new LinkedHashMap<String,String>(postParams);
+    }
+
 
     /**
      * Default constructor
@@ -106,6 +116,14 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
     protected void onPostExecute(String resp){
         super.onPostExecute(resp);
         Log.d(TAG,resp);
-        //parse the string
+        if(profileFragment != null){ //return result to profileFragment
+            if(resp.contains("200")){
+                Log.d("UpdateUserAsyncTask","200!");
+                profileFragment.editProfileDone(true);
+            } else{
+                Log.d("UpdateUserAsyncTask","400!");
+                profileFragment.editProfileDone(false);
+            }
+        }
     }
 }

@@ -61,6 +61,10 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         }
     }
 
+    public void updateUserDone(Boolean r){
+
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         this.map = map;
