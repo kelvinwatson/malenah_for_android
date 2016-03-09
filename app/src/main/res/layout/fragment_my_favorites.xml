@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context="com.watsonlogic.malenah.malenah3.MyFavoritesFragment">
+    tools:context="com.watsonlogic.malenah.malenah3.MyFavoritesFragment"
+    android:background="#000">
 
     <ListView
         android:id="@android:id/list"

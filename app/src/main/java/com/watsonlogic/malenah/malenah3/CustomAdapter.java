@@ -106,6 +106,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
 
 
         ToggleButton favoriteToggle = (ToggleButton)customRow.findViewById(R.id.favoriteToggle);
+        favoriteToggle.setChecked(false);
         if(user != null) {
             favoriteToggle.setVisibility(View.VISIBLE);
             if (userFavorites != null || userFavorites.size() > 0) {
@@ -113,8 +114,6 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
                     Log.d("CustomAdapter", "" + f.getId());
                     if (f.getId() == item.getId()) {
                         favoriteToggle.setChecked(true);
-                    } else {
-                        favoriteToggle.setChecked(false);
                     }
                 }
             }

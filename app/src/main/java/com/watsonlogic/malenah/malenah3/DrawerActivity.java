@@ -228,6 +228,8 @@ public class DrawerActivity extends AppCompatActivity implements
             Log.d("DRAWER parseU",faves);
             Log.d("DRAWER parseU",""+favoriteProvidersArr);
 
+            favorites.clear();
+
             for(int i=0,len=favoriteProvidersArr.length(); i<len; i++){
                 JSONObject obj = null;
                 obj = favoriteProvidersArr.getJSONObject(i);
@@ -283,6 +285,11 @@ public class DrawerActivity extends AppCompatActivity implements
             return;
         }
 
+    }
+
+
+    protected void fetchUserDone(String userInfoStr) {
+        parseUser(userInfoStr);
     }
 
 
@@ -352,6 +359,7 @@ public class DrawerActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        new FetchUserAsyncTask(DrawerActivity.this, user.getKey()).execute();
     }
 
     @Override
