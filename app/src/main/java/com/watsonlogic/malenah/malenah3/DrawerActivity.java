@@ -47,7 +47,6 @@ public class DrawerActivity extends AppCompatActivity implements
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     private ArrayList<RowItem> items = new ArrayList<RowItem>();
@@ -86,13 +85,6 @@ public class DrawerActivity extends AppCompatActivity implements
             mapsIntent.putExtra("items",chiropractors);
         }
         mapsIntent.putExtra("location", location);
-        Log.d("DRAWER", "items=" + physicians.toString());
-        Log.d("DRAWER", "items=" + nurses.toString());
-        /*for(int i=0; i<items.size(); i++){
-            Log.d("DrawerActivity", "fName=" + items.get(i).getFirstName());
-            Log.d("DrawerActivity", "lName=" + items.get(i).getLastName());
-            Log.d("DrawerActivity", "isFave=" + items.get(i).isFavourited());
-        }*/
         startActivity(mapsIntent);
     }
 
@@ -128,11 +120,9 @@ public class DrawerActivity extends AppCompatActivity implements
         JSONArray allProvidersJSONArr = null;
         try{
             allProvidersJSONArr = new JSONArray(allProvidersStr);
-            Log.d("DRAWER,allProJSONArr=",allProvidersJSONArr.toString());
         } catch(JSONException e){
             e.printStackTrace();
         }
-        System.out.println("DRAWER,allProJSONArrLen" + allProvidersJSONArr.length());
         for(int i=0,len=allProvidersJSONArr.length(); i<len; i++){
             JSONObject obj = null;
             try{
@@ -176,8 +166,6 @@ public class DrawerActivity extends AppCompatActivity implements
         }
     }
 
-    //TODO: Compare favorites array and physicians/nurses/chiropractors array
-    //TODO: Set favorited to the physicians/nurses/chiropractors array
     private void setFavoriteProviders(){
         for(RowItem f : favorites){
             for(RowItem p : physicians){
@@ -196,7 +184,6 @@ public class DrawerActivity extends AppCompatActivity implements
                 }
             }
         }
-        debugPrint();
     }
 
     private void debugPrint(){
@@ -212,7 +199,6 @@ public class DrawerActivity extends AppCompatActivity implements
     }
 
     private void parseUser(String userInfoStr){
-        //TODO: Create user object
         try{
             userObj = new JSONObject(userInfoStr);
             long key = userObj.getLong("key");
@@ -221,12 +207,6 @@ public class DrawerActivity extends AppCompatActivity implements
             String email = userObj.getString("email");
             String faves = userObj.getString("favorites");
             JSONArray favoriteProvidersArr = new JSONArray(faves);
-
-            Log.d("DRAWER parseU",""+key);
-            Log.d("DRAWER parseU",userId);
-            Log.d("DRAWER parseU",""+email);
-            Log.d("DRAWER parseU",faves);
-            Log.d("DRAWER parseU",""+favoriteProvidersArr);
 
             favorites.clear();
 
@@ -261,10 +241,7 @@ public class DrawerActivity extends AppCompatActivity implements
                 );
                 favorites.add(ri);
             }
-            Log.d("DRAWER parseU",""+favorites);
             user = new User(key,userId,email,name,favorites);//Create user object
-            Log.d("DRAWER parseU",""+user.getName());
-
         } catch(JSONException e){
             e.printStackTrace();
         }
@@ -275,9 +252,6 @@ public class DrawerActivity extends AppCompatActivity implements
         if(b!=null){
             allProvidersStr=(String)b.getString("allProviders");
             userInfoStr=(String)b.getString("user");
-            Log.d("DRAWER GOTS",allProvidersStr);
-            Log.d("DRAWER GOTS", userInfoStr);
-
             parseProviders(allProvidersStr);
             parseUser(userInfoStr);
             setFavoriteProviders();
@@ -295,7 +269,7 @@ public class DrawerActivity extends AppCompatActivity implements
 
     protected void locationDone(Location location) {
         this.location = location;
-        Log.d("DrawerActivity(locDone)", location.getLatitude() + " " + location.getLongitude());
+        Log.i("DrawerActivity(locDone)", location.getLatitude() + " " + location.getLongitude());
         if(location != null){
             onLocationChanged(location);
         }
@@ -305,7 +279,7 @@ public class DrawerActivity extends AppCompatActivity implements
     protected void getLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-            Log.d("LOCATION","PERMISSION NOT SET!");
+            Log.i("LOCATION","PERMISSION NOT SET!");
             return;
         }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -313,24 +287,24 @@ public class DrawerActivity extends AppCompatActivity implements
         boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         if (gpsEnabled||networkEnabled) {
             if(networkEnabled){
-                Log.d("LOCATION", "NETWORK Enabled");
+                Log.i("LOCATION", "NETWORK Enabled");
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
                 if(locationManager!=null){
                     location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
             }
             if(location==null && gpsEnabled){
-                Log.d("LOCATION", "GPS Enabled");
+                Log.i("LOCATION", "GPS Enabled");
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
                 if(locationManager!=null){
                     location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 }
             }
             if (location != null) {
-                Log.d("LOCATION", "Using last known location!");
+                Log.i("LOCATION", "Using last known location!");
             } else { //get location from GPS, or using ip-api.com/json or use Portland as location fallback
                 location = new Location("");
-                Log.d("LOCATION", "Using ip-api.com/json!");
+                Log.i("LOCATION", "Using ip-api.com/json!");
                 URL url = null;
                 try {
                     url = new URL("http://ip-api.com/json");
@@ -346,7 +320,7 @@ public class DrawerActivity extends AppCompatActivity implements
                 }
             }
         } else {
-            Log.d("LOCATION","Neither NETWORK_PROVIDER nor GPS enabled!"); //unlikely due to mainActivity's check
+            Log.i("LOCATION","Neither NETWORK_PROVIDER nor GPS enabled!"); //unlikely due to mainActivity's check
             setFailSafeLocation();
         }
     }

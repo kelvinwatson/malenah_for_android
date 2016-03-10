@@ -4,8 +4,10 @@ import android.content.Context;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,7 +30,6 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         this.url = url;
         this.location = location;
         this.context = context;
-        Log.d("LOCATION(constructor)",location.toString());
     }
 
     private Boolean parseJSONString(String jsonStr) {
@@ -41,14 +42,12 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
                         String key = itr.next();
                         if (key.equals("lat")) {
                             setLat(Double.parseDouble(jsonObj.get(key).toString()));
-                            Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
-                            Log.d("LOCATION JSON (double) ", Double.toString(lat));
-                            Log.d("LOCATION", "Location set from IP-API.com");
+                            Log.i("LOCATION JSON (double) ", Double.toString(lat));
+                            Log.i("LOCATION", "Location set from IP-API.com");
                         } else if (key.equals("lon")) {
                             setLng(Double.parseDouble(jsonObj.get(key).toString()));
-                            Log.d("LOCATION JSON ", key + ":" + jsonObj.get(key).toString());
-                            Log.d("LOCATION JSON (double) ", Double.toString(lng));
-                            Log.d("LOCATION", "Location set from IP-API.com");
+                            Log.i("LOCATION JSON (double) ", Double.toString(lng));
+                            Log.i("LOCATION", "Location set from IP-API.com");
                         }
                     }
                     if (getLat() > Double.NEGATIVE_INFINITY && getLat() > Double.NEGATIVE_INFINITY) {
@@ -65,9 +64,9 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
     }
 
 
-    private HttpURLConnection connectToURL(){
+    private HttpURLConnection connectToURL() {
         try {
-            urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
             return urlConnection;
         } catch (IOException e) {
             Log.e("LOCATION (error)", "error opening connection");
@@ -89,8 +88,8 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         return null;
     }
 
-    private void setFailSafeLocation(){
-        Log.d("LOCATION","setting failsafe");
+    private void setFailSafeLocation() {
+        Log.i("LOCATION", "setting failsafe");
         setLat(portlandORLat);
         setLng(portlandORLng);
     }
@@ -98,11 +97,11 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... params) {
         urlConnection = connectToURL();
-        if(urlConnection != null) {
+        if (urlConnection != null) {
             String jsonStr = null;
             try {
                 jsonStr = retrieveJSON();
-                if(!parseJSONString(jsonStr)){
+                if (!parseJSONString(jsonStr)) {
                     setFailSafeLocation();
                 }
             } catch (IOException e) {
@@ -121,9 +120,7 @@ public class SetLocationFromIPAsyncTask extends AsyncTask<Void, Void, String> {
         super.onPostExecute(s);
         location.setLatitude(getLat()); //set latitude
         location.setLongitude(getLng()); //set longitude
-        Log.d("LOCATION (manual)", "lat=" + getLat() + " lng=" + getLng());
-        Log.d("LOCATION (onPostExe)","asynctask done");
-        ((DrawerActivity)this.context).locationDone(location);
+        ((DrawerActivity) this.context).locationDone(location);
     }
 
     public double getLat() {

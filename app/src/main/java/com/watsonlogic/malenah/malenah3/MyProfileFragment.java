@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,22 +34,24 @@ import java.util.Map;
  * create an instance of this fragment.
  */
 public class MyProfileFragment extends Fragment {
-    private TextView tv;
-    private User user;
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "MyProfileFragment";
+    private TextView tv;
+    private User user;
     private EditText editTextName;
     private EditText editTextEmail;
     private Button submitChangesBtn;
-
-    // TODO: Rename and change types of parameters
+    private ArrayList<RowItem> favorites = new ArrayList<RowItem>();
+    private JSONObject userObj = null;
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    public MyProfileFragment() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -55,7 +61,6 @@ public class MyProfileFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment MyProfileFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static MyProfileFragment newInstance(String param1, String param2) {
         MyProfileFragment fragment = new MyProfileFragment();
         Bundle args = new Bundle();
@@ -63,10 +68,6 @@ public class MyProfileFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public MyProfileFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -78,14 +79,67 @@ public class MyProfileFragment extends Fragment {
         }
     }
 
+    protected void fetchUserDone(String userInfoStr) {
+        parseUser(userInfoStr);
+    }
+
+    private void parseUser(String userInfoStr) {
+        try {
+            userObj = new JSONObject(userInfoStr);
+            long key = userObj.getLong("key");
+            String userId = userObj.getString("user_id");
+            String name = userObj.getString("name");
+            String email = userObj.getString("email");
+            String faves = userObj.getString("favorites");
+            JSONArray favoriteProvidersArr = new JSONArray(faves);
+
+            favorites.clear();
+
+            for (int i = 0, len = favoriteProvidersArr.length(); i < len; i++) {
+                JSONObject obj = null;
+                obj = favoriteProvidersArr.getJSONObject(i);
+                JSONArray spA = obj.getJSONArray("specializations");
+                ArrayList<String> spL = new ArrayList<String>();
+                for (int k = 0, le = spA.length(); k < le; k++) {
+                    spL.add(((JSONObject) spA.get(k)).getString("name"));
+                }
+                RowItem ri = new RowItem(
+                        obj.getString("category"),
+                        obj.getLong("key"),
+                        obj.getString("icon_url"),
+                        obj.getString("first_name"),
+                        obj.getString("last_name"),
+                        obj.getString("designation"),
+                        spL,
+                        obj.getString("organization"),
+                        obj.getString("building"),
+                        obj.getString("street"),
+                        obj.getString("city"),
+                        obj.getString("state"),
+                        obj.getString("country"),
+                        obj.getString("zipcode"),
+                        obj.getString("notes"),
+                        obj.getDouble("latitude"),
+                        obj.getDouble("longitude"),
+                        0.0,
+                        true
+                );
+                favorites.add(ri);
+            }
+            user = new User(key, userId, email, name, favorites);//Create user object
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Bundle bundle = getArguments();
-        if(bundle != null){
-            user = (User)bundle.getSerializable("user");
-            Log.d("MyProfileFragment", "user" + user);
+        if (bundle != null) {
+            user = (User) bundle.getSerializable("user");
         }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_my_profile, container, false);
     }
@@ -98,51 +152,53 @@ public class MyProfileFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        editTextName = (EditText)getActivity().findViewById(R.id.editTextName);
-        editTextName.setText(user.getName());
-        editTextEmail = (EditText)getActivity().findViewById(R.id.editTextEmail);
-        editTextEmail.setText(user.getEmail());
-        submitChangesBtn = (Button)getActivity().findViewById(R.id.submitChangesBtn);
-        submitChangesBtn.setOnClickListener(
-            new View.OnClickListener() {
-                public void onClick(View view) {
-                    Log.v("EditTextName", editTextName.getText().toString());
-                    Log.v("EditTextEmail", editTextEmail.getText().toString());
-
-                    /*Check for empty input fields */
-                    String nameStr = editTextName.getText().toString();
-                    String emailStr = editTextEmail.getText().toString();
-                    if(TextUtils.isEmpty(nameStr)){
-                        editTextName.setError("You must enter display name.");
-                        return;
-                    }
-                    if(TextUtils.isEmpty(emailStr)){
-                        editTextEmail.setError("You must enter a comment.");
-                        return;
-                    }
-
-                    Map<String, String> postParams = new LinkedHashMap<>();
-                    postParams.put("post_action", "edit_user");
-                    postParams.put("user_id", user.getUserId());
-                    postParams.put("name", nameStr);
-                    postParams.put("email", emailStr);
-                    new UpdateUserAsyncTask(MyProfileFragment.this, postParams).execute();
-
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-                }
-            });
+    public void onStart() {
+        super.onStart();
     }
 
-    public void editProfileDone(Boolean r){
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        editTextName = (EditText) getActivity().findViewById(R.id.editTextName);
+        editTextName.setText(user.getName());
+        editTextEmail = (EditText) getActivity().findViewById(R.id.editTextEmail);
+        editTextEmail.setText(user.getEmail());
+        submitChangesBtn = (Button) getActivity().findViewById(R.id.submitChangesBtn);
+        submitChangesBtn.setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View view) {
+                    /*Check for empty input fields */
+                        String nameStr = editTextName.getText().toString();
+                        String emailStr = editTextEmail.getText().toString();
+                        if (TextUtils.isEmpty(nameStr)) {
+                            editTextName.setError("You must enter display name.");
+                            return;
+                        }
+                        if (TextUtils.isEmpty(emailStr)) {
+                            editTextEmail.setError("You must enter a comment.");
+                            return;
+                        }
+
+                        Map<String, String> postParams = new LinkedHashMap<>();
+                        postParams.put("post_action", "edit_user");
+                        postParams.put("user_id", user.getUserId());
+                        postParams.put("name", nameStr);
+                        postParams.put("email", emailStr);
+                        new UpdateUserAsyncTask(MyProfileFragment.this, postParams).execute();
+
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                    }
+                });
+    }
+
+    public void editProfileDone(Boolean r) {
         String msg = null;
-        if(r){
+        if (r) {
             //result is 200 - OK
             msg = "Profile updated successfully.";
-        }else{
+        } else {
             //result in 400 - error
             msg = "Unable to edit profile. Please try again later.";
         }
@@ -177,7 +233,6 @@ public class MyProfileFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 

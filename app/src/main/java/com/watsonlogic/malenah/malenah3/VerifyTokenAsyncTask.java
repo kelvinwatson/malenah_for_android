@@ -4,9 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,7 +16,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
-    private String TAG = "VerifyToken";
+    private String TAG = "VerifyTokenAsyncTask";
     private Context context;
     Map<String, String> postParams;
 
@@ -31,34 +28,8 @@ public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
     public VerifyTokenAsyncTask() {
     }
 
-    public byte[] generatePostData() {
-        Log.d(TAG, "in generatePostData()");
-        Log.d(TAG, postParams.toString());
-        StringBuilder postData = new StringBuilder();
-        for (Map.Entry<String, String> dParam : postParams.entrySet()) {
-            if (postData.length() != 0) postData.append('&');
-            try {
-                postData.append(URLEncoder.encode(dParam.getKey(), "UTF-8"));
-                postData.append('=');
-                postData.append(URLEncoder.encode(String.valueOf(dParam.getValue()), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
-        Log.d(TAG, postData.toString());
-        byte[] postDataBytes = null;
-        try {
-            postDataBytes = postData.toString().getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return postDataBytes;
-    }
-
     @Override
     protected String doInBackground(Void... params) {
-        Log.d(TAG, "in doInbackground");
-
         /* Set params */
         byte[] postDataBytes = generatePostData();
 
@@ -86,31 +57,38 @@ public class VerifyTokenAsyncTask extends AsyncTask<Void,Void,String> {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             response = "";
             for (int c = in.read(); c != -1; c = in.read()) {
-                //System.out.print((char)c);
                 response += (char) c;
             }
-            Log.d(TAG+" response", response);
+            Log.i(TAG+" response", response);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return response;
     }
 
+    public byte[] generatePostData() {
+        StringBuilder postData = new StringBuilder();
+        for (Map.Entry<String, String> dParam : postParams.entrySet()) {
+            if (postData.length() != 0) postData.append('&');
+            try {
+                postData.append(URLEncoder.encode(dParam.getKey(), "UTF-8"));
+                postData.append('=');
+                postData.append(URLEncoder.encode(String.valueOf(dParam.getValue()), "UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        byte[] postDataBytes = null;
+        try {
+            postDataBytes = postData.toString().getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return postDataBytes;
+    }
+
     protected void onPostExecute(String resp) {
         super.onPostExecute(resp);
-        Log.d(TAG + " resp", resp);
         ((MainActivity) this.context).verifyTokenDone(resp);
-        //parse the string
-        /*JSONObject jResp = null;
-        try {
-            jResp = new JSONObject(resp);
-            if (jResp.has("key")) {
-                ((MainActivity) this.context).verifyTokenDone(jResp);
-            } else {
-                ((MainActivity) this.context).verifyTokenDone(null);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
     }
 }

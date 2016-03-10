@@ -3,8 +3,7 @@ package com.watsonlogic.malenah.malenah3;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -15,14 +14,16 @@ import java.net.URL;
 
 public class FetchUserAsyncTask extends AsyncTask<Long, Void, String> {
     private final String TAG = "fetchUser";
+    public MyProfileFragment profileFragment = null;
     private Long key;
     private String urlStr;
     private String userInfoStr = new String();
-    JSONObject jsonObj = null;
+    private JSONObject jsonObj = null;
     private Context context;
     private URL url;
     private HttpURLConnection urlConnection;
     private long primitive;
+
     /**
      * Overridden constructor
      */
@@ -30,6 +31,16 @@ public class FetchUserAsyncTask extends AsyncTask<Long, Void, String> {
         this.context = context;
         this.key = new Long(key);
     }
+
+    /**
+     * Overridden constructor
+     */
+    public FetchUserAsyncTask(MyProfileFragment profileFragment, Context context, long key) {
+        this.context = context;
+        this.key = new Long(key);
+        this.profileFragment = profileFragment;
+    }
+
 
     /**
      * Default constructor
@@ -41,9 +52,9 @@ public class FetchUserAsyncTask extends AsyncTask<Long, Void, String> {
     protected String doInBackground(Long... i) {
         try {
             primitive = key.longValue();
-            urlStr = "http://malenah-android.appspot.com/user/"+primitive;
+            urlStr = "http://malenah-android.appspot.com/user/" + primitive;
             url = new URL(urlStr);
-            urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,8 +64,6 @@ public class FetchUserAsyncTask extends AsyncTask<Long, Void, String> {
             Log.d(TAG, userInfoStr);
         } catch (IOException e) {
             Log.e(TAG, "error reading stream, internet connection maybe lost");
-            //int status = urlConnection.getResponseCode();
-            //InputStream error = urlConnection.getErrorStream();
         }
         return userInfoStr;
     }
@@ -62,9 +71,11 @@ public class FetchUserAsyncTask extends AsyncTask<Long, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Log.d(TAG, "Asynctask done");
-        ((DrawerActivity)this.context).fetchUserDone(s);
+        if (profileFragment != null) {
+            profileFragment.fetchUserDone(s);
+        } else {
+            ((DrawerActivity) this.context).fetchUserDone(s);
+        }
     }
-
 
 }

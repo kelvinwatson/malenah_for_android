@@ -3,6 +3,7 @@ package com.watsonlogic.malenah.malenah3;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -21,6 +22,7 @@ public class FetchReviewsAsyncTask extends AsyncTask<Long, Void, String> {
     private URL url;
     private HttpURLConnection urlConnection;
     private long primitive;
+
     /**
      * Overridden constructor
      */
@@ -39,19 +41,18 @@ public class FetchReviewsAsyncTask extends AsyncTask<Long, Void, String> {
     protected String doInBackground(Long... i) {
         try {
             primitive = providerId.longValue();
-            urlStr = "http://malenah-android.appspot.com/provider/"+primitive+"/review";
+            urlStr = "http://malenah-android.appspot.com/provider/" + primitive + "/review";
             url = new URL(urlStr);
-            urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection = (HttpURLConnection) url.openConnection();
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
             BufferedReader inputStream = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             jsonArrStr = inputStream.readLine();
-            Log.d("FETCHREV(JSONStr)", jsonArrStr);
             jsonArr = new JSONArray(jsonArrStr);
-        } catch(JSONException e){
-            Log.e("FETCHREV","JSONException");
+        } catch (JSONException e) {
+            Log.e("FETCHREV", "JSONException");
         } catch (IOException e) {
             Log.e("FETCHREV", "error reading stream, internet connection maybe lost");
             //int status = urlConnection.getResponseCode();
@@ -63,12 +64,7 @@ public class FetchReviewsAsyncTask extends AsyncTask<Long, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        Log.d("FETCHREV", "Asynctask done");
-        //Intent i = new Intent(context, ProfileActivity.class);
-        //i.putExtra("Reviews", jsonArrStr);
-        //context.startActivity(i);
-        ((ProfileActivity)this.context).fetchReviewsDone(jsonArr);
+        ((ProfileActivity) this.context).fetchReviewsDone(jsonArr);
     }
-
 
 }

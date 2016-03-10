@@ -1,11 +1,7 @@
 package com.watsonlogic.malenah.malenah3;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 
-public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
+public class UpdateUserAsyncTask extends AsyncTask<Void, Void, String> {
     private final String TAG = "UPDATEFAVORITE";
     public MyProfileFragment profileFragment = null;
     Map<String, String> postParams;
@@ -29,17 +25,15 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
      * Overridden constructor
      */
     public UpdateUserAsyncTask(Map<String, String> postParams) {
-        Log.d("UpdateUserAsyncTask","non-fragment constructor");
-        this.postParams = new LinkedHashMap<String,String>(postParams);
+        this.postParams = new LinkedHashMap<String, String>(postParams);
     }
 
     /**
      * Overridden constructor
      */
     public UpdateUserAsyncTask(MyProfileFragment profileFragment, Map<String, String> postParams) {
-        Log.d("UpdateUserAsyncTask","fragment constructor");
         this.profileFragment = profileFragment;
-        this.postParams = new LinkedHashMap<String,String>(postParams);
+        this.postParams = new LinkedHashMap<String, String>(postParams);
     }
 
 
@@ -49,9 +43,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
     public UpdateUserAsyncTask() {
     }
 
-    public byte[] generatePostData(){
-        Log.d(TAG, "in generatePostData()");
-        Log.d(TAG,postParams.toString());
+    public byte[] generatePostData() {
         StringBuilder postData = new StringBuilder();
         for (Map.Entry<String, String> dParam : postParams.entrySet()) {
             if (postData.length() != 0) postData.append('&');
@@ -63,11 +55,11 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
                 e.printStackTrace();
             }
         }
-        Log.d(TAG,postData.toString());
+        Log.d(TAG, postData.toString());
         byte[] postDataBytes = null;
-        try{
+        try {
             postDataBytes = postData.toString().getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e){
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return postDataBytes;
@@ -75,8 +67,6 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
 
     @Override
     protected String doInBackground(Void... params) {
-        Log.d(TAG,"in doInbackground");
-
         /* Set params */
         byte[] postDataBytes = generatePostData();
 
@@ -85,7 +75,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
         HttpURLConnection conn = null;
         try {
             url = new URL("http://malenah-android.appspot.com/user");
-            conn = (HttpURLConnection)url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Content-Length", String.valueOf(postDataBytes.length));
@@ -93,7 +83,7 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
             conn.getOutputStream().write(postDataBytes);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -103,25 +93,22 @@ public class UpdateUserAsyncTask extends AsyncTask<Void,Void,String> {
         try {
             in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
             response = "";
-            for (int c = in.read(); c != -1; c = in.read()){
-                //System.out.print((char)c);
+            for (int c = in.read(); c != -1; c = in.read()) {
                 response += (char) c;
             }
-        } catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return response;
     }
 
-    protected void onPostExecute(String resp){
+    protected void onPostExecute(String resp) {
         super.onPostExecute(resp);
-        Log.d(TAG,resp);
-        if(profileFragment != null){ //return result to profileFragment
-            if(resp.contains("200")){
-                Log.d("UpdateUserAsyncTask","200!");
+        Log.d(TAG, resp);
+        if (profileFragment != null) { //return result to profileFragment
+            if (resp.contains("200")) {
                 profileFragment.editProfileDone(true);
-            } else{
-                Log.d("UpdateUserAsyncTask","400!");
+            } else {
                 profileFragment.editProfileDone(false);
             }
         }

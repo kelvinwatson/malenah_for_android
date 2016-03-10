@@ -2,7 +2,6 @@ package com.watsonlogic.malenah.malenah3;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -23,17 +21,15 @@ import com.squareup.picasso.Picasso;
  * create an instance of this fragment.
  */
 public class FindServicesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private OnFragmentInteractionListener mListener;
 
+    public FindServicesFragment() {
+        // Required empty public constructor
+    }
 
     /**
      * Use this factory method to create a new instance of
@@ -43,7 +39,6 @@ public class FindServicesFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment FindServicesFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static FindServicesFragment newInstance(String param1, String param2) {
         FindServicesFragment fragment = new FindServicesFragment();
         Bundle args = new Bundle();
@@ -51,10 +46,6 @@ public class FindServicesFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public FindServicesFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -67,41 +58,40 @@ public class FindServicesFragment extends Fragment {
     }
 
 
-
-    public void loadIcons(View rv){
+    public void loadIcons(View rv) {
         Context context = getActivity();
 
-        ImageView doctorIcon = (ImageView)rv.findViewById(R.id.physicians); //get reference
+        ImageView doctorIcon = (ImageView) rv.findViewById(R.id.physicians); //get reference
         Picasso.with(context)
                 .load(R.drawable.doctor_icon)
                 .fit()
                 .centerInside()
                 .into(doctorIcon);
-        ImageView nurseIcon = (ImageView)rv.findViewById(R.id.nurses);
+        ImageView nurseIcon = (ImageView) rv.findViewById(R.id.nurses);
         Picasso.with(context)
                 .load(R.drawable.nurse_icon)
                 .fit()
                 .centerInside()
                 .into(nurseIcon);
-        ImageView counselorIcon = (ImageView)rv.findViewById(R.id.counselors);
+        ImageView counselorIcon = (ImageView) rv.findViewById(R.id.counselors);
         Picasso.with(context)
                 .load(R.drawable.counselor_icon)
                 .fit()
                 .centerInside()
                 .into(counselorIcon);
-        ImageView labIcon = (ImageView)rv.findViewById(R.id.labs);
+        ImageView labIcon = (ImageView) rv.findViewById(R.id.labs);
         Picasso.with(context)
                 .load(R.drawable.lab_icon)
                 .fit()
                 .centerInside()
                 .into(labIcon);
-        ImageView chiropractorIcon = (ImageView)rv.findViewById(R.id.chiropractors);
+        ImageView chiropractorIcon = (ImageView) rv.findViewById(R.id.chiropractors);
         Picasso.with(context)
                 .load(R.drawable.chiropractor_icon)
                 .fit()
                 .centerInside()
                 .into(chiropractorIcon);
-        ImageView insuranceIcon = (ImageView)rv.findViewById(R.id.insurance);
+        ImageView insuranceIcon = (ImageView) rv.findViewById(R.id.insurance);
         Picasso.with(context)
                 .load(R.drawable.insurance_icon)
                 .fit()
@@ -114,15 +104,14 @@ public class FindServicesFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_find_services, container, false);
-        try{
+        try {
             loadIcons(rootView);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -157,7 +146,6 @@ public class FindServicesFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 

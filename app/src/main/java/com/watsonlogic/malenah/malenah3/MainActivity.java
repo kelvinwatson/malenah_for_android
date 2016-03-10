@@ -37,24 +37,22 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener, GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+    static final int SET_LOCATION_REQUEST = 1;  // The request code
+    private static final int RC_SIGN_IN = 9001;
     final Context context = this;
     private LocationManager locationManager;
     private boolean gpsEnabled;
     private boolean networkEnabled;
-    static final int SET_LOCATION_REQUEST = 1;  // The request code
     private DataReceiver dataReceiver;
     private String providers;
     private String userInfo;
     private Button startButton;
     private GoogleApiClient mGoogleApiClient;
-    private static final int RC_SIGN_IN = 9001;
     private TextView mStatusTextView;
     private SignInButton signInButton;
 
@@ -62,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startButton = (Button)findViewById(R.id.startButton); //get reference to button
+        startButton = (Button) findViewById(R.id.startButton); //get reference to button
         startButton.setVisibility(View.GONE);
         loadIcon();
         configureGoogleLogin();
@@ -88,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         findViewById(R.id.sign_in_button).setOnClickListener(this);
     }
 
-    public void loadIcon(){
-        ImageView titleIcon = (ImageView)findViewById(R.id.titleIcon); //get reference to rowIcon
+    public void loadIcon() {
+        ImageView titleIcon = (ImageView) findViewById(R.id.titleIcon); //get reference to rowIcon
         Picasso.with(context)
                 .load(R.drawable.malenah_icon)
                 .fit()
@@ -103,13 +101,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         startButton.setEnabled(false); //disable start button until all data retrieved
 
-        if(!isFullyConnected(getApplicationContext())) { //check connection
-            Log.d("NETWORK","not connected");
+        if (!isFullyConnected(getApplicationContext())) { //check connection
+            Log.d("NETWORK", "not connected");
             enableInternet();
             return;
-        }else{ //internet connected
+        } else { //internet connected
             getData();
-            Log.d("NETWORK","connected");
+            Log.d("NETWORK", "connected");
             if (!enableLocation()) { //check Location
                 return;
             }
@@ -144,29 +142,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    public class DataReceiver extends BroadcastReceiver{
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            providers = intent.getStringExtra("providers");
-            Log.d("FETCH", "in Main, providers=" + providers);
-            Intent loginIntent = new Intent(MainActivity.this, DrawerActivity.class);
-            loginIntent.putExtra("providers", providers);
-            Log.d("FETCH", "Launch button enabled");
-        }
     }
 
     public void launchDrawerActivity(View v) {
         Intent i = new Intent(MainActivity.this, DrawerActivity.class);
-        i.putExtra("allProviders",providers);
-        i.putExtra("user",userInfo);
+        i.putExtra("allProviders", providers);
+        i.putExtra("user", userInfo);
         startActivity(i);
     }
 
-
-    protected void enableInternet(){
+    protected void enableInternet() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("A network connection is required. Please turn on mobile network or WiFi in Settings.")
                 .setTitle("Unable to connect")
@@ -189,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         AlertDialog alert = builder.create();
         alert.show();
     }
+
     //Source: http://stackoverflow.com/questions/28168867/check-internet-status-from-the-main-activity
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -196,35 +182,35 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
-    public boolean isConnectedMobile(Context context){
+    public boolean isConnectedMobile(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_MOBILE;
     }
 
-    public boolean isConnectedWifi(Context context){
+    public boolean isConnectedWifi(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
-    public boolean isFullyConnected(Context context){
-        if (isNetworkAvailable(context)){
-            Log.d("NETWORK","available");
-            if(isConnectedMobile(context)){
-                Log.d("NETWORK","mobile connected");
+    public boolean isFullyConnected(Context context) {
+        if (isNetworkAvailable(context)) {
+            Log.d("NETWORK", "available");
+            if (isConnectedMobile(context)) {
+                Log.d("NETWORK", "mobile connected");
                 return true;
             }
-            if(isConnectedWifi(context)){
-                Log.d("NETWORK","wifi connected");
+            if (isConnectedWifi(context)) {
+                Log.d("NETWORK", "wifi connected");
                 return true;
             }
         }
         return false;
     }
 
-    protected boolean enableLocation(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+    protected boolean enableLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
         if (checkLocationPermission()) {
@@ -233,16 +219,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             Log.d("LOCATION (permission)", "permission denied!");
             return false;
         }
-        if  ((Build.VERSION.SDK_INT >= 23) &&
+        if ((Build.VERSION.SDK_INT >= 23) &&
                 (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
                 (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             return false;
         }
         //Source: http://stackoverflow.com/questions/15997079/getlastknownlocation-always-return-null-after-i-re-install-the-apk-file-via-ecli
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
         networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network status
-        if (!gpsEnabled && !networkEnabled){
+        if (!gpsEnabled && !networkEnabled) {
             Log.d("LOCATION (GPS)", "disabled, ask user to enable!");
             //show dialog to allow user to enable location settings
             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
@@ -264,8 +250,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         } else if (gpsEnabled) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
             Log.d("LOCATION (GPS)", LocationManager.GPS_PROVIDER);
-        }else if (networkEnabled){
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,1000,10,this);
+        } else if (networkEnabled) {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
             Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
         }
         return true;
@@ -274,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==SET_LOCATION_REQUEST) {
+        if (resultCode == SET_LOCATION_REQUEST) {
             switch (requestCode) {
                 case 1:
                     break;
@@ -286,9 +272,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         }
     }
 
-    public void verifyTokenDone(String userInformation){
+    public void verifyTokenDone(String userInformation) {
         userInfo = userInformation;
-        Log.d("VerifyToken done",userInfo);
+        Log.d("VerifyToken done", userInfo);
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -301,15 +287,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             String email = acct.getEmail();
             String name = acct.getDisplayName();
 
-            Map<String,String> postParams = new LinkedHashMap<>();
+            Map<String, String> postParams = new LinkedHashMap<>();
             postParams.put("id_token", idToken); //pass to App Engine Python API
-            postParams.put("email",email);
+            postParams.put("email", email);
             postParams.put("name", name);
 
-            Log.d("VerifyToken", "execute async task from MainActivity()");
+            //Log.d("VerifyTokenAsyncTask", "execute async task from MainActivity()");
             new VerifyTokenAsyncTask(MainActivity.this, postParams).execute();
 
-            Toast.makeText(getApplicationContext(),"Login Successful",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_LONG).show();
 
             startButton.setVisibility(View.VISIBLE);
             startButton.setEnabled(true); //disable start button until logged in and all data retrieved
@@ -346,7 +332,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -374,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onStop();
         try {
             unregisterReceiver(dataReceiver);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -384,8 +369,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onPause();
         try {
             unregisterReceiver(dataReceiver);
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public class DataReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            providers = intent.getStringExtra("providers");
+            //Log.d("FETCH", "in Main, providers=" + providers);
+            Intent loginIntent = new Intent(MainActivity.this, DrawerActivity.class);
+            loginIntent.putExtra("providers", providers);
         }
     }
 }

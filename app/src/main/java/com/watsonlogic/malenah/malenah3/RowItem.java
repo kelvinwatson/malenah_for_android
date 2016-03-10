@@ -2,12 +2,24 @@ package com.watsonlogic.malenah.malenah3;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RowItem implements Parcelable,Serializable {
+public class RowItem implements Parcelable, Serializable {
+    public static final Creator<RowItem> CREATOR = new Creator<RowItem>() {
+        @Override
+        public RowItem createFromParcel(Parcel in) {
+            return new RowItem(in);
+        }
+
+        @Override
+        public RowItem[] newArray(int size) {
+            return new RowItem[size];
+        }
+    };
     private String category;
     private long id;
     private String iconURL;
@@ -29,31 +41,31 @@ public class RowItem implements Parcelable,Serializable {
     private boolean favourited;
     private Marker mapMarker;
 
+
     public RowItem(String category, long id, String iconURL,
                    String firstName, String lastName, String designation, ArrayList<String> specialty, String organization,
                    String buildingNumber, String street, String city, String state, String country, String postalCode,
-                   String notes, double latitude, double longitude, double distance, boolean favourited){
-        this.category=category;
-        this.id=id;
-        this.iconURL=iconURL;
-        this.firstName=firstName;
-        this.lastName=lastName;
-        this.designation=designation;
-        this.specialty=specialty;
-        this.organization=organization;
-        this.buildingNumber=buildingNumber;
-        this.street=street;
-        this.city=city;
-        this.state=state;
-        this.country=country;
-        this.postalCode=postalCode;
-        this.notes=notes;
-        this.latitude=latitude;
-        this.longitude=longitude;
-        this.distance=distance;
-        this.favourited=favourited;
+                   String notes, double latitude, double longitude, double distance, boolean favourited) {
+        this.category = category;
+        this.id = id;
+        this.iconURL = iconURL;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.designation = designation;
+        this.specialty = specialty;
+        this.organization = organization;
+        this.buildingNumber = buildingNumber;
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.postalCode = postalCode;
+        this.notes = notes;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.distance = distance;
+        this.favourited = favourited;
     }
-
 
     protected RowItem(Parcel in) {
         category = in.readString();
@@ -74,20 +86,8 @@ public class RowItem implements Parcelable,Serializable {
         latitude = in.readDouble();
         longitude = in.readDouble();
         distance = in.readDouble();
-        favourited = (in.readInt()==0)?false:true;
+        favourited = (in.readInt() == 0) ? false : true;
     }
-
-    public static final Creator<RowItem> CREATOR = new Creator<RowItem>() {
-        @Override
-        public RowItem createFromParcel(Parcel in) {
-            return new RowItem(in);
-        }
-
-        @Override
-        public RowItem[] newArray(int size) {
-            return new RowItem[size];
-        }
-    };
 
     @Override
     public int describeContents() {
@@ -114,7 +114,7 @@ public class RowItem implements Parcelable,Serializable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeDouble(distance);
-        dest.writeInt(favourited?1:0);
+        dest.writeInt(favourited ? 1 : 0);
     }
 
     public String getCategory() {

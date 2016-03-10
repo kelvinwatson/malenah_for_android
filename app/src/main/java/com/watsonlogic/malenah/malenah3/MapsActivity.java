@@ -3,28 +3,29 @@ package com.watsonlogic.malenah.malenah3;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity implements LocationListener,OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback {
+    ListAdapter adapter = null;
     private LocationManager locationManager;
     private String provider;
     private Location location;
@@ -36,7 +37,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
     private LatLng userLatLng = null;
     private GoogleMap map;
     private Marker userMarker;
-    ListAdapter adapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +51,16 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
         setUpListView();
     }
 
-    public void computeDistances(){
-        Log.d("AsyncTask","compute distances");
+    public void computeDistances() {
         ComputeDistancesAsyncTask a = new ComputeDistancesAsyncTask(MapsActivity.this, rowItems);
-        try{
+        try {
             a.execute();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void updateUserDone(Boolean r){
-
+    public void updateUserDone(Boolean r) {
     }
 
     @Override
@@ -79,25 +77,24 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
                     .position(userLatLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     .title("You are here"));
-            updateMapCenter(userLatLng,userMarker);
+            updateMapCenter(userLatLng, userMarker);
         } else {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 14));
             userMarker = map.addMarker(new MarkerOptions()
                     .position(defaultLatLng)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                     .title("You are here"));
-            updateMapCenter(defaultLatLng,userMarker);
+            updateMapCenter(defaultLatLng, userMarker);
         }
     }
 
     public void placeItemMarkers() {
         if (rowItems != null && rowItems.size() > 0)
             for (RowItem ri : rowItems) {
-                Log.d("MapsActivity (marker)", ri.getLatitude() + " " + ri.getLongitude());
                 ri.setMapMarker(map.addMarker(new MarkerOptions()
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                         .position(new LatLng(ri.getLatitude(), ri.getLongitude()))
-                        .title(ri.getFirstName()+ " "+ri.getLastName())));
+                        .title(ri.getFirstName() + " " + ri.getLastName())));
             }
     }
 
@@ -128,15 +125,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
                 user = (User) bundle.getSerializable("user");
                 rowItems = bundle.getParcelableArrayList("items");
                 location = bundle.getParcelable("location");
-                //Log.d("MapsActivity", "user=" + user);
-                Log.d("MapsActivity", "rowItems=" + rowItems);
                 if (location != null) {
                     userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    Log.d("MapsActivity", "location=" + location);
-                }
-                for (int i = 0; i < rowItems.size(); i++) {
-                    Log.d("MapsActivity", "name=" + rowItems.get(i).getFirstName()+rowItems.get(i).getLastName());
-                    Log.d("MapsActivity", "isFave=" + rowItems.get(i).isFavourited());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -148,7 +138,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
     protected void updateMapCenter(LatLng l, Marker marker) {
         //map.moveCamera(CameraUpdateFactory.newLatLngZoom(l, 14));
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(l, 14));
-        //TODO: animate camera instead of move
         marker.showInfoWindow();
     }
 
@@ -167,7 +156,6 @@ public class MapsActivity extends FragmentActivity implements LocationListener,O
     }
 
     public void distancesDone(ArrayList<RowItem> rowItems) {
-        Log.d("AsyncTask","Back in MapsActivity");
         this.rowItems = rowItems;
         ((ArrayAdapter) adapter).notifyDataSetChanged();
     }
