@@ -35,6 +35,8 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class DrawerActivity extends AppCompatActivity implements
         FindServicesFragment.OnFragmentInteractionListener,
@@ -333,7 +335,10 @@ public class DrawerActivity extends AppCompatActivity implements
     @Override
     protected void onStart() {
         super.onStart();
-        new FetchUserAsyncTask(DrawerActivity.this, user.getKey()).execute();
+        Map<String, String> postParams = new LinkedHashMap<>();
+        postParams.put("post_action", "get_user");
+        postParams.put("user_id", user.getUserId());
+        new FetchUserAsyncTask(DrawerActivity.this, postParams).execute();
     }
 
     @Override
