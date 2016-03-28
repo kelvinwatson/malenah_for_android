@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -53,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private String userInfo;
     private Button startButton;
     private GoogleApiClient mGoogleApiClient;
-    private TextView mStatusTextView;
     private SignInButton signInButton;
 
     @Override
@@ -95,15 +93,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 .into(titleIcon);
     }
 
+
+    private void promptUserToEnableConnection(){
+        DialogInterface.OnClickListener p = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                startActivity(new Intent(Settings.ACTION_SETTINGS));
+            }
+        };
+        DialogInterface.OnClickListener n = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                MainActivity.this.finish();
+            }
+        };
+        generateDialog("Unable to connect",
+                "A network connection is required. Please turn on mobile network or WiFi in Settings.",
+                "Settings", "Cancel", p, n);
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-
         startButton.setEnabled(false); //disable start button until all data retrieved
-
         if (!isFullyConnected(getApplicationContext())) { //check connection
             Log.d("NETWORK", "not connected");
-            enableInternet();
+            promptUserToEnableConnection();
             return;
         } else { //internet connected
             getData();
@@ -151,30 +164,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         startActivity(i);
     }
 
-    protected void enableInternet() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("A network connection is required. Please turn on mobile network or WiFi in Settings.")
-                .setTitle("Unable to connect")
-                .setCancelable(false)
-                .setPositiveButton("Settings",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                //Intent i = new Intent(Settings.ACTION_SETTINGS);
-                                startActivity(new Intent(Settings.ACTION_SETTINGS));
-                            }
-                        }
-                )
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                MainActivity.this.finish();
-                            }
-                        }
-                );
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
     //Source: http://stackoverflow.com/questions/28168867/check-internet-status-from-the-main-activity
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -209,52 +198,71 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         return false;
     }
 
-    protected boolean enableLocation() {
+    private boolean checkLocationPermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
-        }
-        if (checkLocationPermission()) {
-            Log.d("LOCATION (permission)", "user granted permission!");
-        } else {
-            Log.d("LOCATION (permission)", "permission denied!");
-            return false;
         }
         if ((Build.VERSION.SDK_INT >= 23) &&
                 (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) &&
                 (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
             return false;
         }
-        //Source: http://stackoverflow.com/questions/15997079/getlastknownlocation-always-return-null-after-i-re-install-the-apk-file-via-ecli
+        if (!checkLocationPermission()) {
+            Log.d("LOCATION (permission)", "permission denied!");
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean enableLocation() {
+        if (!checkLocationPermissions()){ //SHORT CIRCUIT DISABLED PERMISSIONS
+            return false;
+        }
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER); //check GPS status
         networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER); // check network status
         if (!gpsEnabled && !networkEnabled) {
-            Log.d("LOCATION (GPS)", "disabled, ask user to enable!");
-            //show dialog to allow user to enable location settings
-            AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-            dialog.setTitle("GPS Disabled");
-            dialog.setMessage("Location services must be enabled. Enable now?").setCancelable(false);
-
-            dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), SET_LOCATION_REQUEST);
-                }
-            });
-
-            dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) { //do nothing
-                }
-            });
-            dialog.show();
+            promptUserToEnableLocation(); //GPS disabled, ask user to enable
             return false;
         } else if (gpsEnabled) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
-            Log.d("LOCATION (GPS)", LocationManager.GPS_PROVIDER);
+            try{
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, this);
+            } catch(SecurityException e){
+                e.printStackTrace();
+            }
+            Log.i("LOCATION (GPS)", LocationManager.GPS_PROVIDER);
         } else if (networkEnabled) {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
-            Log.d("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
+            try {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, this);
+            }catch(SecurityException e){
+                e.printStackTrace();
+            }
+            Log.i("LOCATION (provider)", LocationManager.NETWORK_PROVIDER);
         }
         return true;
+    }
+
+    private void promptUserToEnableLocation(){
+        DialogInterface.OnClickListener p = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), SET_LOCATION_REQUEST);
+            }
+        };
+        DialogInterface.OnClickListener n = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) { //do nothing
+            }
+        };
+        generateDialog("GPS Disabled", "Location services must be enabled. Enable now?", "Yes", "No", p, n);
+    }
+
+    private void generateDialog(String title, String msg, String pos, String neg,
+                                DialogInterface.OnClickListener diop, DialogInterface.OnClickListener dion){
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(title);
+        dialog.setMessage(msg).setCancelable(false);
+        dialog.setPositiveButton(pos, diop);
+        dialog.setNegativeButton(neg, dion);
+        dialog.show();
     }
 
     @Override
@@ -378,9 +386,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         @Override
         public void onReceive(Context context, Intent intent) {
             providers = intent.getStringExtra("providers");
-            //Log.d("FETCH", "in Main, providers=" + providers);
-            Intent loginIntent = new Intent(MainActivity.this, DrawerActivity.class);
-            loginIntent.putExtra("providers", providers);
         }
     }
 }

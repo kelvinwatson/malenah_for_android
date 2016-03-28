@@ -48,10 +48,13 @@ public class DrawerActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener {
 
     @Override
+    public void onBackPressed() {
+    }
+
+    @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
     }
 
-    private ArrayList<RowItem> items = new ArrayList<RowItem>();
     public ArrayList<RowItem> physicians = new ArrayList<RowItem>();
     public ArrayList<RowItem> nurses = new ArrayList<RowItem>();
     public ArrayList<RowItem> chiropractors = new ArrayList<RowItem>();
@@ -61,7 +64,6 @@ public class DrawerActivity extends AppCompatActivity implements
     public String userInfoStr = new String();
     private LocationManager locationManager;
     private Location location = null;
-    private Context context;
     private JSONObject userObj = null;
     private GoogleApiClient mGoogleApiClient;
 
@@ -78,7 +80,7 @@ public class DrawerActivity extends AppCompatActivity implements
 
     public void launchMapsActivity(View v){
         Intent mapsIntent = new Intent(this,MapsActivity.class);
-        mapsIntent.putExtra("user",user);
+        mapsIntent.putExtra("user", user);
         if(v.getId()==R.id.physicians) {
             mapsIntent.putExtra("items", physicians);
         } else if(v.getId()==R.id.nurses){
@@ -116,6 +118,13 @@ public class DrawerActivity extends AppCompatActivity implements
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     private void parseProviders(String allProvidersStr){
@@ -373,6 +382,7 @@ public class DrawerActivity extends AppCompatActivity implements
             }case 3: {
                 mTitle = "Logout";
                 googleSignOut();
+                onDestroy();
                 break;
             }default:{
                 mTitle = "Find Services";
@@ -380,12 +390,6 @@ public class DrawerActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction().replace(R.id.container, f).commit();
             }
         }
-    }
-
-    private void googleSignOut(){
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        finish();
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
 
@@ -465,6 +469,10 @@ public class DrawerActivity extends AppCompatActivity implements
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    public void googleSignOut() {
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient);
     }
 
     /**

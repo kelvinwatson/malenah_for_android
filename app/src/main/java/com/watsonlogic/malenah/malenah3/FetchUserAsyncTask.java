@@ -20,14 +20,7 @@ import java.util.Map;
 public class FetchUserAsyncTask extends AsyncTask<Void,Void,String> {
     private final String TAG = "fetchUser";
     public MyProfileFragment profileFragment = null;
-    private Long key;
-    private String urlStr;
-    private String userInfoStr = new String();
-    private JSONObject jsonObj = null;
     private Context context;
-    private URL url;
-    private HttpURLConnection urlConnection;
-    private long primitive;
 
     Map<String, String> postParams;
 
